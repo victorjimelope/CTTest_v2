@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+      http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+      http://www.springframework.org/schema/tx
+      http://www.springframework.org/schema/tx/spring-tx-4.2.xsd
+      http://www.springframework.org/schema/context
+      http://www.springframework.org/schema/context/spring-context-4.2.xsd">
+      
+      
+	<context:property-placeholder location="classpath:persistence-mysql.properties" />
+	
+	<context:component-scan base-package="bl" />
+	<context:component-scan base-package="dao" />
+	
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		
+		<property name="dataSource" ref="dataSourceH" />
+		
+		<property name="mappingResources">
+			<list>
+				<value>mappings/Center.hbm.xml</value>
+				<value>mappings/Test.hbm.xml</value>
+				<!-- <value>mappings/TestVersion.hbm.xml</value> -->
+				<value>mappings/TestInstance.hbm.xml</value>
+				<value>mappings/Question.hbm.xml</value>
+				<value>mappings/Answer.hbm.xml</value>
+				<value>mappings/StudentGroup.hbm.xml</value>
+				<value>mappings/Student.hbm.xml</value>
+				<value>mappings/StudentTest.hbm.xml</value>
+				<value>mappings/StudentAnswer.hbm.xml</value>
+				<value>mappings/Image.hbm.xml</value>
+				<value>mappings/User.hbm.xml</value>
+				<value>mappings/LoggedUser.hbm.xml</value>
+			</list>
+		</property>
+
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<prop key="hibernate.cache.use_query_cache">${hibernate.cache.use_query_cache}</prop>
+				<prop key="hibernate.id.new_generator_mappings">${hibernate.id.new_generator_mappings}</prop>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<prop key="hibernate.use_sql_comments">false</prop>
+				<prop key="hibernate.format_sql">false</prop>
+			</props>
+		</property>
+		
+	</bean>
+	
+    <!-- Hibernate SessionFactory -->
+    <bean id="dataSourceH" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" value="${jdbc.driverClassName}" />
+		<property name="jdbcUrl" value="${jdbc.url}" />
+		<property name="user" value="${jdbc.user}" />
+		<property name="password" value="${jdbc.password}" />
+		
+		<property name="maxPoolSize" value="250" />
+		<property name="minPoolSize" value="10" />
+		<property name="maxStatements" value="50" />
+		<property name="testConnectionOnCheckout" value="true" />
+	</bean>
+	
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<tx:annotation-driven />
+	
+	<bean id="persistenceExceptionTranslationPostProcessor"
+		class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+	
+	<bean id="springContextUtil" class="util.SpringContextUtil" />
+	
+</beans>

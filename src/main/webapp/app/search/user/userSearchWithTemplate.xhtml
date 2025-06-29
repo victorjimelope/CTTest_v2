@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+	
+	
+    <ui:composition template="/template/app_template.xhtml">
+        <ui:define name="title">#{msg.label_users}</ui:define>
+        <ui:define name="body">
+        	
+        	<c:set var="backingBeanRef" value="#{userSearchBean}" />
+        	
+        	<h:form id="UsSeFrId">
+	        	<ui:include src="userSearch.xhtml" />
+        	</h:form>
+        	
+        	<h:form id="MoUsFrId">
+	        	<ui:include src="modal/modalUserForm.xhtml" />
+        	</h:form>
+        	
+        	<h:form id="MoUsDeId">
+	        	<ui:include src="modal/modalUserDelete.xhtml" />
+        	</h:form>
+        	
+        </ui:define>
+    </ui:composition>
+	
+</html>

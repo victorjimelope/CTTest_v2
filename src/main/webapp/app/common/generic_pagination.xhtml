@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j">
+	
+	
+	<ui:fragment rendered="#{pagination.totalPages gt 1}">
+	    <div class="row align-items-center mt-3">
+		    <div class="col">
+		        <h:outputFormat value="#{msg.label_page_xxx_of_yyy}"
+		        	styleClass="text-muted">
+		            <f:param value="#{pagination.currentPage}" />
+		            <f:param value="#{pagination.totalPages}" />
+		        </h:outputFormat>
+		    </div>
+		
+		    <div class="col-auto ms-auto">
+		        <div class="d-flex gap-2">
+		            <a4j:commandLink actionListener="#{pagination.previousPage}"
+		            	disabled="#{!pagination['hasPreviousPage']()}"
+		            	styleClass="btn btn-light #{!pagination['hasPreviousPage']() ? 'disabled' : ''}"
+		            	render="@this, #{renderList}" >
+		                <i class="fa-solid fa-chevron-left px-2" />
+		            </a4j:commandLink>
+		
+		            <a4j:commandLink actionListener="#{pagination.nextPage}"
+			            disabled="#{!pagination['hasNextPage']()}"
+			            styleClass="btn btn-light #{!pagination['hasNextPage']() ? 'disabled' : ''}"
+			            render="@this, #{renderList}" >
+		                <i class="fa-solid fa-chevron-right px-2" />
+		            </a4j:commandLink>
+		        </div>
+		    </div>
+		</div>
+	</ui:fragment>
+    
+</html>

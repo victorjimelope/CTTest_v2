@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j">
+    
+    
+    <div class="card">
+    	<div class="card-body">
+	  	
+	  	<h2 class="text-center">Progreso</h2>
+	  
+		 <div class="row row-cols-2 row-cols-lg-5 g-2 g-lg-3">
+		    <a4j:repeat value="#{backingBeanRef.currentTest.questions}" var="qtn">
+		        <div class="col">
+		            <a4j:commandButton value="#{qtn.order + 1}" 
+		                render="questionPanel"
+		                styleClass="btn btn-outline-primary
+		                	fw-bold rounded d-flex justify-content-center align-items-center p-3 w-100" />
+		        </div>
+		    </a4j:repeat>
+		</div>
+	
+		<hr class="my-4"></hr>
+		
+		<div class="row row-cols-auto g-3 align-items-center">
+		
+		    <div class="d-flex align-items-center gap-2">
+		        <div class="rounded-2 bg-primary" style="width: 16px; height: 16px;"></div>
+		        <span>Primary Label</span>
+		    </div>
+		    
+		    <div class="d-flex align-items-center gap-2">
+		        <div class="rounded-2 bg-warning" style="width: 16px; height: 16px;"></div>
+		        <span>Warning Label</span>
+		    </div>
+		    
+		    <div class="d-flex align-items-center gap-2">
+		        <div class="rounded-2 bg-danger" style="width: 16px; height: 16px;"></div>
+		        <span>Danger Label</span>
+		    </div>
+		</div>
+	</div>
+	
+	</div>
+	
+	<div class="row justify-content-end mt-3">
+	    <div class="col-auto">
+	    	<a4j:commandButton value="#{msg.label_finish}"
+	    		onclick="return confirm('¿Finalizar test?')"
+		        actionListener="#{backingBeanRef.finishTest}" 
+		        styleClass="btn btn-warning btn-lg"
+		        render="@form" />
+	    </div>
+	</div>
+
+</html>

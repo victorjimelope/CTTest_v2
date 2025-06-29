@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:a4j="http://richfaces.org/a4j">
+	
+	
+    <div class="card h-100 d-flex justify-content-center align-items-center text-center text-secondary p-4">
+	    <i class="bi bi-image fs-4" />
+	    <p class="mt-2 mb-0">
+	        <input id="TeAnImId#{rkv}" type="file" accept="image/*"
+	        	class="d-none" onchange="convertToBase64('TeAnImId#{rkv}', 'addNewAnswer', #{rkv})" />
+	        	
+	        <a4j:commandLink value="#{msg.label_add_image}"
+	            onclick="document.getElementById('TeAnImId#{rkv}').click()"
+	            styleClass="link-secondary text-decoration-none"/>
+	    </p>
+	</div>
+	
+</html>

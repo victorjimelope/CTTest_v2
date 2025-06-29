@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+	
+	
+    <ui:composition template="/template/app_template.xhtml">
+        <ui:define name="title">#{msg.label_test}: #{testFormBean.currentObject.name}</ui:define>
+        <ui:define name="body">
+        	
+        	<c:set var="backingBeanRef" value="#{testFormBean}" />
+        	
+        	<ui:fragment rendered="#{!backingBeanRef.showErrorPage}">
+       			<h:form id="TeViFrId">
+	       			<ui:include src="testView.xhtml" />
+	        	</h:form>
+	        	
+	        	<h:form id="MoNwInId">
+		        	<ui:include src="modal/modalNewTestInstance.xhtml" />
+	        	</h:form>
+	        	
+	        	<h:form id="MoChAcId">
+		        	<ui:include src="modal/modalTestChangeToActive.xhtml" />
+	        	</h:form>
+	        	
+	        	<h:form id="MoChBlId">
+		        	<ui:include src="modal/modalTestChangeToBlocked.xhtml" />
+	        	</h:form>
+       		</ui:fragment>
+        	
+        	<ui:fragment rendered="#{backingBeanRef.showErrorPage}">
+       			ERROR
+       		</ui:fragment>
+        	
+        </ui:define>
+    </ui:composition>
+	
+</html>

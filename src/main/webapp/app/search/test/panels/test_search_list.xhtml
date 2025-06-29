@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j">
+	
+	
+	<ui:fragment rendered="#{empty backingBeanRef.pagination.objectList}">
+		#{msg.label_no_results_found}
+	</ui:fragment>
+	
+	<ui:fragment rendered="#{!empty backingBeanRef.pagination.objectList}">
+	    <div class="table-responsive">
+	        <table class="table table-borderless table-hover">
+	            <thead>
+	                <tr>
+	                    <th scope="col" class="col-1">#</th>
+	                    <th scope="col" class="col-5">#{msg.label_titulo}</th>
+	                    <th scope="col" class="col-3">#{msg.label_status}</th>
+	                    <th scope="col" class="col-2"></th>
+	                    <th scope="col" class="col-1" />
+	                </tr>
+	            </thead>
+	
+	            <tbody>
+	                <a4j:repeat value="#{backingBeanRef.pagination.currentPageList}" var="test">
+	                    <tr>
+	                        <th scope="row">#{test.id}</th>
+	
+	                        <td>
+	                            <h:link value="#{test.name}"
+	                            	outcome="#{applicationStatusBean.testViewWithTemplateURI}"
+	                            	styleClass="link-dark ">
+	                                <f:param name="id" value="#{test.id}" />
+	                            </h:link>
+	                        </td>
+	
+	                        <td>
+	                            <span class="badge bg-#{test.status.color}-subtle
+	                            	border border-#{test.status.color}-subtle
+	                            	text-#{test.status.color}-emphasis rounded-pill p-2">
+	                                #{test.status.title}
+	                            </span>
+	                        </td>
+	
+	                        <td />
+	
+	                        <td>
+	                            <div class="dropdown text-end position-static">
+	                                <button class="btn btn-sm" type="button"
+	                                	data-bs-toggle="dropdown" aria-expanded="false">
+	                                    <i class="bi bi-three-dots-vertical" />
+	                                </button>
+	
+	                                <ul class="dropdown-menu dropdown-menu-end">
+	                                	<ui:fragment rendered="#{backingBeanRef.currentTab eq backingBeanRef.myTestsTabId}">
+	                                	 	<li class="dropdown-item">
+	                                	 		<a4j:commandLink id="TeSeEdId"
+													actionListener="#{backingBeanRef['setCurrentObject'](test)}"
+										            oncomplete="openModal('modalTestForm');"
+										            styleClass="d-flex align-items-center gap-2 text-decoration-none"
+										            render="MoTeFrId">
+													<i class="bi bi-pencil-fill" />
+													#{msg.label_edit}
+												</a4j:commandLink>
+	                                        </li>
+	                                        
+	                                        <li class="dropdown-item dropdown-item-danger">
+	                                        	<a4j:commandLink id="TeSeDeId"
+													actionListener="#{backingBeanRef['setCurrentObject'](test)}"
+													oncomplete="openModal('modalTestDelete');"
+										            styleClass="d-flex align-items-center gap-2 text-decoration-none text-danger"
+										            render="MoTeDeId">
+													<i class="bi bi-trash-fill" />
+													#{msg.label_delete}
+												</a4j:commandLink>
+	                                        </li>
+	                                	</ui:fragment>
+	                                
+	                                    <ui:fragment rendered="#{backingBeanRef.currentTab eq backingBeanRef.exploreTabId}">
+	                                        <li class="dropdown-item">
+	                                        	<a4j:commandLink id="TeExImId"
+													actionListener="#{backingBeanRef['setCurrentObject'](test)}"
+													oncomplete="openModal('modalTestClone');"
+										            styleClass="d-flex align-items-center gap-2 text-decoration-none"
+										            render="MoTeClId" >
+													<i class="fa-regular fa-clone" />
+													#{msg.label_clone}
+												</a4j:commandLink>
+	                                        </li>
+	                                    </ui:fragment>
+	                                </ul>
+	                            </div>
+	                        </td>
+	                    </tr>
+	                </a4j:repeat>
+	            </tbody>
+	        </table>
+	    </div>
+	
+	    <ui:include src="/app/common/generic_pagination.xhtml">
+	        <ui:param name="pagination" value="#{backingBeanRef.pagination}" />
+	        <ui:param name="renderList" value="CeSeLiId" />
+	    </ui:include>
+	</ui:fragment>
+	
+</html>

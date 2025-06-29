@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j">
+    
+    
+    <div class="row mb-3">
+	    <div class="col-12">
+	        <div class="d-flex justify-content-between align-items-center">
+	        	<h3 class="text-primary">
+		        	#{backingBeanRef.currentIndex + 1}/#{backingBeanRef.currentTest.questions.size()}
+		        </h3>
+		        
+	        	<h3 class="text-primary">#{backingBeanRef.currentTest.name}</h3>
+	        	
+	           	<a4j:commandButton value="#{msg.label_finish}"
+			        oncomplete="openModal('modalFinishStudentTest');"
+			        styleClass="btn btn-warning fw-bold"
+			        render="StFnFrId"/>
+	        </div>
+	    </div>
+	</div>
+	
+    <ui:fragment rendered="#{currentQuestion.image ne null}">
+	    <div class="card mb-3 bg-white">
+	        <div class="card-body d-flex justify-content-center align-items-center">
+	            <h:graphicImage value="#{currentQuestion.image['getImageDataAsBase64']()}"
+	            	styleClass="img-fluid" />
+	        </div>
+	    </div>
+	</ui:fragment>
+	
+	<div class="row justify-content-center mb-3">
+	    <div class="col-auto">
+	        <h2 class="text-primary text-center">#{currentQuestion.question}</h2>
+	    </div>
+	</div>
+	
+	<div class="row">
+	    <a4j:repeat value="#{currentQuestion.answers}" var="answer" rowKeyVar="rkvA">
+	        <div class="#{currentQuestion.answersLayout.colClass}">
+	            <ui:include src="/app/common/image_card.xhtml">
+	                <ui:param name="answerId" value="#{answer.id}" />
+	                <ui:param name="imageDataAsBase64" value="#{answer.image['getImageDataAsBase64']()}" />
+	                <ui:param name="showSetAnswerButton" value="true" />
+	                <ui:param name="isSelected" value="#{backingBeanRef['isAnswerSelected'](currentQuestion.id, answer.id)}" />
+	            </ui:include>
+	        </div>
+	    </a4j:repeat>
+	</div>
+	
+	<div class="position-sticky bottom-0 w-100 z-3">
+	    <div class="row justify-content-end m-0 p-2 mt-4">
+	        <div class="col-auto">
+	            <a4j:commandLink value="Anterior"
+	                actionListener="#{backingBeanRef['loadQuestion'](
+	                	currentQuestion.order - 1)}" 
+	                styleClass="btn btn-outline-primary btn-lg bg-white text-primary"
+	                render="@form" />
+	        </div>
+	        <div class="col-auto">
+	            <a4j:commandLink value="Siguiente"
+	                actionListener="#{backingBeanRef['loadQuestion'](
+	                	currentQuestion.order + 1)}" 
+	                styleClass="btn btn-primary btn-lg" 
+	                render="@form" />
+	        </div>
+	    </div>
+	</div>
+
+</html>

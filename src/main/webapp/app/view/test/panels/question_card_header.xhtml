@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:a4j="http://richfaces.org/a4j">
+	
+	
+	<div class="card-header d-flex justify-content-between">
+	
+	    <div class="d-flex align-items-center gap-2">
+	        <a4j:commandLink id="TeQuSeId#{rkv}"
+	            title=""
+	            styleClass="btn btn-light"
+	            actionListener="#{question.setSelected(!question.selected)}"
+	            render="TeViFrId">
+	            <i class="#{question.selected ? 'bi bi-chevron-up' : 'bi bi-chevron-down'}" />
+	        </a4j:commandLink>
+	
+	        <i class="fa-solid fa-circle-question" />
+	        #{msg.label_question} #{rkv+1}
+	    </div>
+	    
+	    <div class="d-none d-sm-flex gap-2">
+	        <a4j:commandLink id="TeQuMUId#{rkv}" title="#{msg.label_move_up}"
+	            styleClass="btn btn-light"
+	            actionListener="#{backingBeanRef['moveQuestionUp'](rkv)}"
+	            render="TeViFrId">
+	            <i class="bi bi-arrow-up" />
+	        </a4j:commandLink>
+	
+	        <a4j:commandLink id="TeQuMDId#{rkv}" title="#{msg.label_move_down}"
+	            styleClass="btn btn-light"
+	            actionListener="#{backingBeanRef['moveQuestionDown'](rkv)}"
+	            render="TeViFrId">
+	            <i class="bi bi-arrow-down" />
+	        </a4j:commandLink>
+	
+	        <a4j:commandLink id="TeQuDuId#{rkv}" title="#{msg.label_duplicate_question}"
+	            styleClass="btn btn-light"
+	            actionListener="#{backingBeanRef['duplicateQuestion'](rkv)}"
+	            render="TeViFrId">
+	            <i class="fa-regular fa-clone" />
+	        </a4j:commandLink>
+	
+	        <a4j:commandLink id="TeQuDeId#{rkv}"
+	        	title="#{msg.label_delete_question}"
+	            styleClass="btn btn-light"
+	            actionListener="#{backingBeanRef['deleteQuestion'](rkv)}"
+	            render="TeViFrId">
+	            <i class="fa-solid fa-trash-can" />
+	        </a4j:commandLink>
+	    </div>
+	    
+	    <div class="dropdown d-sm-none">
+	        <button class="btn btn-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+	            <i class="bi bi-three-dots-vertical" />
+	        </button>
+	        
+	        <ul class="dropdown-menu dropdown-menu-end">
+	            <li>
+	                <a4j:commandLink styleClass="dropdown-item"
+	                    title="#{msg.label_move_up}"
+	                    actionListener="#{backingBeanRef['moveQuestionUp'](rkv)}"
+	                    render="TeViFrId">
+	                    <i class="bi bi-arrow-up" />
+	                    #{msg.label_move_up}
+	                </a4j:commandLink>
+	            </li>
+	            
+	            <li>
+	                <a4j:commandLink styleClass="dropdown-item"
+	                    title="#{msg.label_move_down}"
+	                    actionListener="#{backingBeanRef['moveQuestionDown'](rkv)}"
+	                    render="TeViFrId">
+	                    <i class="bi bi-arrow-down" />
+	                    #{msg.label_move_down}
+	                </a4j:commandLink>
+	            </li>
+	            
+	            <li>
+	                <a4j:commandLink styleClass="dropdown-item"
+	                    title="#{msg.label_duplicate_question}"
+	                    actionListener="#{backingBeanRef['duplicateQuestion'](rkv)}"
+	                    render="TeViFrId">
+	                    <i class="fa-regular fa-clone" />
+	                    #{msg.label_duplicate_question}
+	                </a4j:commandLink>
+	            </li>
+	            
+	            <li>
+	                <a4j:commandLink styleClass="dropdown-item"
+	                    title="#{msg.label_delete_question}"
+	                    actionListener="#{backingBeanRef['deleteQuestion'](rkv)}"
+	                    render="TeViFrId">
+	                   <i class="fa-solid fa-trash-can" />
+	                    #{msg.label_delete_question}
+	                </a4j:commandLink>
+	            </li>
+	        </ul>
+	    </div>
+	</div>
+
+	
+</html>

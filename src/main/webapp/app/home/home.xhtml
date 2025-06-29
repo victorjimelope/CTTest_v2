@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+	
+	<h:head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	    <title>#{msg.label_app_name}</title>
+	
+		<h:outputStylesheet library="css_V2" name="bootstrap.css" />
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+			integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
+			crossorigin="anonymous" />
+		<script src="https://kit.fontawesome.com/4a3b582f89.js" crossorigin="anonymous"></script>
+	</h:head>
+	
+	<h:body>
+	
+		<ui:include src="/app/common/messages.xhtml" />
+	
+	    <c:set var="backingBeanRef" value="#{homeBean}" />
+	    
+        <div class="container-fluid bg-primary text-white d-flex justify-content-center align-items-center vh-100">
+            <div class="row w-100 justify-content-center">
+                <div class="col-sm-8 col-md-6 col-lg-5 col-xl-4 col-xxl-3">
+	                <h:form id="CTTsFrId">
+	                    <div class="d-flex justify-content-center align-items-end gap-4 mb-5">
+	                        <h:graphicImage name="img/Logo URJC.png"
+	                        	styleClass="img-fluid" style="height: 70px;" />
+	                        <h1 class="fw-bold mb-0">#{msg.label_app_name}</h1>
+	                    </div>
+	                    
+	                    <div class="mb-3">
+						    <h:outputText value="#{msg.label_test_pin}"
+						        styleClass="form-label fw-bold" />
+						    <h:inputText value="#{backingBeanRef.pinStr}"
+						    	styleClass="form-control mt-2" />
+						</div>
+						
+						<div class="mb-5">
+						    <h:outputText value="#{msg.label_student_id}"
+						        styleClass="form-label fw-bold" />
+						    <h:inputText value="#{backingBeanRef.identifier}"
+						    	styleClass="form-control mt-2" />
+						</div>
+						
+						<a4j:commandButton value="#{msg.label_enter}"
+						    action="#{backingBeanRef['navigateToTest']()}"
+						    styleClass="btn btn-warning fw-bold py-2 w-100 fs-5" />
+						    
+                        <div class="d-flex justify-content-center mt-4">
+						    <h:link outcome="#{applicationStatusBean.loginURI}"
+						    	styleClass="fw-bold text-white text-decoration-none d-flex align-items-center gap-2">
+						        <i class="fa-solid fa-lock"></i>
+						        #{msg.label_login}
+						    </h:link>
+						</div>
+					</h:form>
+                </div>
+            </div>
+        </div>
+	    
+	</h:body>
+	
+</html>

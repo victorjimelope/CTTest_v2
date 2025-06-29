@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd"
+	[ <!ENTITY commonFields  SYSTEM "classpath://mappings/common/commonFields.xml">]>
+<hibernate-mapping>
+
+    <class name="model.TestInstance" table="test_instance">
+    
+        &commonFields;
+         
+        <property name="testId" column="test_id" type="integer" />
+        
+        <many-to-one name="studentGroup" class="model.StudentGroup" column="student_group_id"
+        	not-null="true" fetch="join" lazy="false"/>
+        
+        <property name="status" column="status_id" type="model.enums.usertype.TestInstanceStatusUserType"/>
+        
+        <many-to-one name="assignedBy" class="model.User" column="assigned_by_user_id"
+        	not-null="true" fetch="join" lazy="false"/>
+        	
+        <property name="assignedDate" column="assigned_date" type="java.time.LocalDate" />
+        
+        <property name="pin" column="pin" type="integer" />
+        
+    </class>
+    
+</hibernate-mapping>

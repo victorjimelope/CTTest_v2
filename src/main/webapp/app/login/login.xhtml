@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+	
+	<h:head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	    <title>#{msg.label_app_name} - #{msg.label_login}</title>
+	    
+		<h:outputStylesheet library="css_V2" name="bootstrap.css" />
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+			integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
+			crossorigin="anonymous" />
+		<script src="https://kit.fontawesome.com/4a3b582f89.js" crossorigin="anonymous"></script>
+	</h:head>
+    
+    <h:body>
+    
+    	<ui:include src="/app/common/messages.xhtml" />
+    
+    	<c:set var="backingBeanRef" value="#{loginBean}" />
+    
+    	<div class="container-fluid vh-100">
+		    <div class="row h-100">
+		        <div class="col-md-6 d-none d-md-flex justify-content-center align-items-center bg-primary">
+		            <h:graphicImage name="img/Welcome img.png" styleClass="img-fluid" />
+		        </div>
+		
+		        <div class="col-md-6 d-flex justify-content-center align-items-center bg-light">
+		            <div class="row w-100 justify-content-center">
+		                <div class="col-sm-8 col-md-10 col-lg-10 col-xl-8 col-xxl-6">
+		                    <h:form id="LoInFrId">
+		                        <h2 class="fw-bold mb-5 text-center">#{msg.label_login}</h2>
+		                        
+		                        <div class="mb-3">
+		                            <h:outputText value="#{msg.label_user}"
+		                            	styleClass="form-label fw-bold" />
+		                            <h:inputText value="#{backingBeanRef.username}"
+		                            	styleClass="form-control mt-2" />
+		                        </div>
+		
+		                        <div class="mb-5">
+		                            <h:outputText value="#{msg.label_password}"
+		                            	styleClass="form-label fw-bold" />
+		                            <h:inputSecret value="#{backingBeanRef.password}"
+		                            	styleClass="form-control mt-2" />
+		                        </div>
+								
+								<a4j:commandButton value="#{msg.label_enter}"
+								    action="#{backingBeanRef['login']()}"
+								    styleClass="btn btn-warning fw-bold py-2 w-100 fs-5"
+								    render="alertContainer" />
+								
+								<div class="d-flex justify-content-center mt-4">
+								    <h:link outcome="#{applicationStatusBean.homeURI}"
+								    	styleClass="fw-bold text-decoration-none d-flex align-items-center gap-2">
+								        <i class="fa-solid fa-share fa-flip-horizontal"></i>
+								        #{msg.label_return}
+								    </h:link>
+								</div>
+		                    </h:form>
+		                </div>
+		            </div>
+		        </div>
+		    </div>
+		</div>
+		
+    </h:body>
+    
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j">
+	
+	
+	<ul class="nav nav-tabs">
+		<li class="nav-item">
+    		<a4j:commandLink value="#{msg.label_questions}"
+				actionListener="#{backingBeanRef['setCurrentTab'](backingBeanRef.questionsTabId)}"
+				styleClass="#{backingBeanRef.currentTab eq backingBeanRef.questionsTabId
+					? 'nav-link active' : 'nav-link'}"
+				render="@form" />
+  		</li>
+		
+		<li class="nav-item">
+    		<a4j:commandLink value="#{msg.label_pruebas}"
+				actionListener="#{backingBeanRef['setCurrentTab'](backingBeanRef.testsTabId)}"
+				styleClass="#{backingBeanRef.currentTab eq backingBeanRef.testsTabId
+					? 'nav-link active' : 'nav-link'}"
+				render="@form" />
+  		</li>
+	</ul>
+	
+	<div class="card mt-3">
+		<div class="card-body">
+			<ui:fragment rendered="#{backingBeanRef.currentTab eq backingBeanRef.questionsTabId}">
+				<ui:include src="testQuestionsTab.xhtml" />
+			</ui:fragment>
+			
+			<ui:fragment rendered="#{backingBeanRef.currentTab eq backingBeanRef.testsTabId}">
+				<ui:include src="testTestsTab.xhtml" />
+			</ui:fragment>
+		</div>
+	</div>
+	
+</html>

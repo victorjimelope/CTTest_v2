@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j">
+	
+	
+	<a4j:repeat value="#{backingBeanRef.currentObject.questions}"
+		var="question" rowKeyVar="rkv">
+		<ui:include src="panels/question_card.xhtml" />
+	</a4j:repeat>
+	
+	<div class="row justify-content-between mt-3">
+	    <div class="d-flex justify-content-between">
+	        <a4j:commandLink id="TeNwQuId"
+	            value="#{msg.label_new_question}"
+	            styleClass="btn btn-primary"
+	            actionListener="#{backingBeanRef['addNewQuestion']()}"
+	            render="TeViFrId" />
+	
+	        <a4j:commandLink id="TeTeSvId"
+	            value="#{msg.label_save}"
+	            actionListener="#{backingBeanRef['updateQuestions']()}"
+	            styleClass="btn btn-primary" />
+	    </div>
+	</div>
+	
+	<a4j:jsFunction name="addQuestionImage"
+		action="#{backingBeanRef['addQuestionImage'](index, imageDataAsBase64, mimeType)}" 
+		render="@form, alertContainer">
+		<a4j:param name="index" assignTo="#{index}" />
+	    <a4j:param name="imageData" assignTo="#{imageDataAsBase64}" />
+	    <a4j:param name="mimeType" assignTo="#{mimeType}" />
+	</a4j:jsFunction>
+	
+	<a4j:jsFunction name="addNewAnswer"
+		action="#{backingBeanRef['addNewAnswer'](index, imageDataAsBase64, mimeType)}" 
+		render="@form, alertContainer">
+		<a4j:param name="index" assignTo="#{index}" />
+	    <a4j:param name="imageData" assignTo="#{imageDataAsBase64}" />
+	    <a4j:param name="mimeType" assignTo="#{mimeType}" />
+	</a4j:jsFunction>
+	
+</html>

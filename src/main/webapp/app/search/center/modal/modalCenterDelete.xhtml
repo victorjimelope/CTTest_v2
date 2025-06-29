@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+	
+	
+	<div class="modal fade" id="modalCenterDelete" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">#{msg.label_delete_center}</h5>
+                    <button type="button" class="btn-close"
+                    	data-bs-dismiss="modal" aria-label="#{msg.label_close}" />
+                </div>
+                
+               <div class="modal-body text-center d-flex flex-column align-items-center my-3">
+					<div class="mb-3">
+						<i class="bi bi-exclamation-triangle-fill text-danger fs-1" />
+					</div>
+					
+					<strong class="mb-2">
+						#{msg.label_delete_center_confirmation}
+					</strong>
+					
+					<span>
+						#{msg.label_this_action_cannot_be_undone}
+					</span>
+				</div>
+                
+                <div class="modal-footer">
+                	<button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                		#{msg.label_cancel}
+               		</button>
+                		
+				    <a4j:commandButton value="#{msg.label_delete}"
+				    	actionListener="#{backingBeanRef['deleteCurrentObject']()}"
+				    	oncomplete="closeModal('modalCenterDelete');"
+				    	styleClass="btn btn-danger"
+				    	render="CeSeLiId, alertContainer" />
+				</div>
+            </div>
+        </div>
+    </div>
+    
+</html>

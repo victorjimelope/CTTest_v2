@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:a4j="http://richfaces.org/a4j">
+	
+	
+	<div class="card-body">
+	
+		<div class="row">
+	    	<div class="col">
+	    		<label class="form-label">#{msg.label_statement}</label>
+	    	</div>
+	    </div>
+	    
+		<ui:fragment rendered="#{question.image eq null}">
+			<div class="row mb-3">
+				<div class="d-flex align-items-center">
+			        <h:inputText value="#{question.question}"
+			        	styleClass="form-control me-2" />
+			        	
+			        <input id="TeQtImId#{rkv}" type="file" accept="image/*"
+			        	class="d-none" onchange="convertToBase64('TeQtImId#{rkv}', 'addQuestionImage', #{rkv})" />
+			        	
+			        <a4j:commandLink
+			            onclick="document.getElementById('TeQtImId#{rkv}').click()"
+			            styleClass="btn btn-primary" >
+			            <i class="bi bi-image" />
+			        </a4j:commandLink>
+			    </div>
+		    </div>
+		</ui:fragment>
+	
+		<ui:fragment rendered="#{question.image ne null}">
+			<div class="row d-flex align-items-stretch mb-3">
+			    <div class="col-lg-9">
+			        <h:inputTextarea value="#{question.question}"
+			            styleClass="form-control h-100" style="resize: none;" />
+			    </div>
+			    
+			    <div class="col-lg-3">
+			    	<ui:include src="/app/common/image_card.xhtml">
+					    <ui:param name="imageDataAsBase64" value="#{question.image['getImageDataAsBase64']()}" />
+					    <ui:param name="showDeleteButton" value="true" />
+					    <ui:param name="deleteButtonTitle" value="#{msg.label_delete_image}" />
+					</ui:include>
+			    </div>
+			</div>
+		</ui:fragment>
+			
+	   <div class="row mb-3">
+		    <div class="col d-flex align-items-center gap-3">
+		        <label class="form-label mb-0">#{msg.label_answers}</label>
+		        
+		        <div class="btn-group" role="group" aria-label="#{msg.label_layout}">
+		        	<a4j:repeat value="#{backingBeanRef.answersLayoutTypeList}" var="layoutType" >
+		        		<a4j:commandLink
+		        			actionListener="#{question['setAnswersLayout'](layoutType)}"
+		        			styleClass="btn #{question.answersLayout eq layoutType
+		        				? 'btn-primary' : 'btn-outline-primary'}"
+		        			render="@form">
+			                <i class="#{layoutType.icon}"></i>
+			            </a4j:commandLink>
+		        	</a4j:repeat>
+		        </div>
+		    </div>
+		</div>
+		
+		<ui:include src="question_card_answer.xhtml" />
+		
+		<ui:fragment rendered="false">
+			<hr/>
+			
+			<ui:include src="question_card_stats.xhtml" />
+		</ui:fragment>
+		
+	</div>
+	
+</html>

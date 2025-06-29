@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j">
+	
+	
+	<ui:fragment rendered="#{empty backingBeanRef.pagination.objectList}">
+		#{msg.label_no_results_found}
+	</ui:fragment>
+	
+	<ui:fragment rendered="#{!empty backingBeanRef.pagination.objectList}">
+		<div class="table-responsive">
+			<table class="table table-borderless table-hover">
+				<thead>
+					<tr>
+						<th scope="col" class="col-1">#</th>
+						<th scope="col" class="col-10">#{msg.label_name}</th>
+						<th scope="col" class="col-1" />
+					</tr>
+				</thead>
+				
+				<tbody>
+					<a4j:repeat value="#{backingBeanRef.pagination.currentPageList}" var="center">
+						<tr>
+							<th scope="row">#{center.id}</th>
+							
+							<td>
+								<h:link value="#{center.name}"
+									outcome="#{applicationStatusBean.centerViewWithTemplateURI}"
+									styleClass="link-dark " >
+									<f:param name="id" value="#{center.id}" />
+									<f:param name="mode" value="view" />
+								</h:link>
+							</td>
+							
+							<td>
+								<div class="dropdown text-end position-static">
+									<button class="btn btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+										<i class="bi bi-three-dots-vertical" />
+									</button>
+									
+									<ul class="dropdown-menu dropdown-menu-end">
+										 <li class="dropdown-item">
+										 	<a4j:commandLink id="CeSeEdId"
+												actionListener="#{backingBeanRef['setCurrentObject'](center)}"
+									            oncomplete="openModal('modalCenterForm');"
+									            styleClass="d-flex align-items-center gap-2 text-decoration-none"
+									            render="MoCeFrId">
+												<i class="bi bi-pencil-fill" />
+												#{msg.label_edit}
+											</a4j:commandLink>
+                                        </li>
+										
+										<li class="dropdown-item dropdown-item-danger">
+										 	<a4j:commandLink id="CeSeDeId"
+												actionListener="#{backingBeanRef['setCurrentObject'](center)}"
+												oncomplete="openModal('modalCenterDelete');"
+									            styleClass="d-flex align-items-center gap-2 text-decoration-none text-danger"
+									            render="MoCeDeId">
+												<i class="bi bi-trash-fill" />
+												#{msg.label_delete}
+											</a4j:commandLink>
+                                        </li>
+									</ul>
+								</div>
+							</td>
+						</tr>
+					</a4j:repeat>
+				</tbody>
+			</table>
+		</div>
+		
+		<ui:include src="/app/common/generic_pagination.xhtml">
+			<ui:param name="pagination" value="#{backingBeanRef.pagination}" />
+			<ui:param name="renderList" value="CeSeLiId" />
+		</ui:include>
+		
+	</ui:fragment>
+	
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j">
+	
+	
+	<div class="row mb-3">
+		<div class="col h4 text-secondary">
+			<i class="bi bi-house-fill" /> / #{msg.label_tests} / #{backingBeanRef.currentObject.name}
+		</div>
+	</div>
+	
+	<div class="row mt-3">
+	    <div class="col d-flex justify-content-between align-items-center">
+	        <h2>#{backingBeanRef.currentObject.name}</h2>
+	
+	        <ui:fragment rendered="false">
+	            <a4j:commandLink styleClass="btn btn-primary btn-sm">
+	                <i class="bi bi-pencil-fill"></i>
+	            </a4j:commandLink>
+	        </ui:fragment>
+	
+			<div class="dropdown">
+			    <button class="btn btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+			        <i class="bi bi-three-dots-vertical"></i>
+			    </button>
+			
+			    <ul class="dropdown-menu dropdown-menu-end">
+			        <ui:fragment rendered="#{!backingBeanRef.currentObject.active}">
+			            <li>
+			            	<a4j:commandLink id="TeChAcId"
+			            		oncomplete="openModal('modalTestChangeToActive');"
+			            		styleClass="dropdown-item d-flex align-items-center gap-2"
+			            		render="MoChAcId">
+							    <i class="fa-solid fa-check" />
+							    #{msg.label_change_to_active}
+							</a4j:commandLink>
+			            </li>
+			        </ui:fragment>
+			        
+			        <ui:fragment rendered="#{backingBeanRef.currentObject.active}">
+			            <li>
+			            	<a4j:commandLink id="TeChBlId"
+			            		oncomplete="openModal('modalTestChangeToBlocked');"
+			            		styleClass="dropdown-item d-flex align-items-center gap-2"
+			            		render="MoChBlId">
+							    <i class="fa-solid fa-ban" />
+							    #{msg.label_change_to_blocked}
+							</a4j:commandLink>
+			            </li>
+			        </ui:fragment>
+			    </ul>
+			</div>
+		</div>
+	</div>
+	
+	<div class="row mb-3">
+	    <div class="col-auto d-flex gap-2">
+	    	<span class="badge bg-#{backingBeanRef.currentObject.type.color}-subtle
+	   			border border-#{backingBeanRef.currentObject.type.color}-subtle
+	   			text-#{backingBeanRef.currentObject.type.color}-emphasis rounded-pill p-2">
+	   		 	#{backingBeanRef.currentObject.type.title}
+	   		</span>
+	   		
+	        <span class="badge bg-#{backingBeanRef.currentObject.status.color}-subtle
+	   			border border-#{backingBeanRef.currentObject.status.color}-subtle
+	   			text-#{backingBeanRef.currentObject.status.color}-emphasis rounded-pill p-2">
+	   		 	#{backingBeanRef.currentObject.status.title}
+	   		</span>
+	    </div>
+	</div>
+	
+	<ui:fragment rendered="#{!empty backingBeanRef.currentObject.description}">
+		<div class="row mt-3 mb-3">
+			<div class="col">
+				#{backingBeanRef.currentObject.description}
+	     	</div>
+		</div>
+	</ui:fragment>
+	
+	<ui:include src="testTabList.xhtml" />
+	
+</html>

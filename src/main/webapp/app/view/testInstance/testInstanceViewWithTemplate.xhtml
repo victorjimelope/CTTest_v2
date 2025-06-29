@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+	
+	
+    <ui:composition template="/template/app_template.xhtml">
+        <ui:define name="title">#{testInstanceFormBean.currentObjectTest.name}
+        	- #{testInstanceFormBean.currentObject.pin}</ui:define>
+        <ui:define name="body">
+        	
+        	<c:set var="backingBeanRef" value="#{testInstanceFormBean}" />
+        	
+        	<h:form id="TIViFrId">
+	        	<ui:include src="testInstanceView.xhtml" />
+        	</h:form>
+        	
+        	<h:form id="MoStSuId">
+	        	<ui:include src="modal/modalStudentTestSummary.xhtml" />
+        	</h:form>
+        	
+        </ui:define>
+    </ui:composition>
+	
+</html>

@@ -1,0 +1,14 @@
+<!-- common fragment xml will be reused from other hbm.xml files -->
+
+<id name="id" column="id">
+    <generator class="identity"/>
+</id>
+
+<property name="addDate" column="add_date" type="java.time.LocalDateTime" />
+
+<property name="addUser" column="add_user" type="java.lang.Integer" />
+
+<property name="modDate" column="mod_date" type="java.time.LocalDateTime" />
+
+<property name="modUser" column="mod_user" type="java.lang.Integer" />
+

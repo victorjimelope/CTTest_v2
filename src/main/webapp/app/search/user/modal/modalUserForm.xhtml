@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+	
+	
+	<div class="modal fade" id="modalUserForm" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">#{backingBeanRef.currentObject.id ne null
+                    	? msg.label_edit_user : msg.label_new_user}</h5>
+                    <button type="button" class="btn-close"
+                    	data-bs-dismiss="modal" aria-label="#{msg.label_close}" />
+                </div>
+                
+                <div class="modal-body">
+                     <div class="mb-3">
+				        <h:outputLabel value="#{msg.label_username}"
+				        	styleClass="form-label" />
+				        <h:inputText value="#{backingBeanRef.currentObject.username}"
+				        	styleClass="form-control" />
+				    </div>
+				    
+				    <ui:fragment rendered="#{backingBeanRef.currentObject.id eq null}">
+					    <div class="mb-3">
+					        <h:outputLabel value="#{msg.label_password}"
+					        	styleClass="form-label" />
+				        	<h:inputSecret value="#{backingBeanRef.currentObject.newPassword}"
+								styleClass="form-control" />
+					    </div>
+				    </ui:fragment>
+				    
+				    <div class="row">
+					    <div class="col-sm-6 mb-3">
+					    	<h:panelGroup id="UsCePgId" layout="block">
+						        <h:outputLabel value="#{msg.label_center}" styleClass="form-label" />
+						        
+						        <h:selectOneMenu value="#{backingBeanRef.currentObject.center.id}"
+						        	styleClass="form-select"
+						        	disabled="#{!empty backingBeanRef.currentObject.studentGroups}">
+						            <f:selectItem itemLabel="#{msg.label_select}" />
+						            <f:selectItems value="#{backingBeanRef.centerComboList}"
+						            	var="x" itemValue="#{x.key}" itemLabel="#{x.value}" />
+						            <a4j:ajax event="change"
+					                     listener="#{backingBeanRef['loadStudentGroupList'](
+					                     	backingBeanRef.currentObject.center.id)}"
+					                     render="@this, UsSGPgId" />
+						        </h:selectOneMenu>
+					        </h:panelGroup>
+					    </div>
+					    
+					    <div class="col-sm-6">
+					    	<div class="dropdown" id="UsSGPgId">
+								<div class="form-label d-flex align-items-center">
+								    <h:outputLabel value="#{msg.label_classes}" />
+								
+								    <h:panelGroup id="UsSGSiId" layout="block">
+								        <ui:fragment rendered="#{!empty backingBeanRef.currentObject.studentGroups}">
+								            <span class="ms-2 badge bg-primary">
+								                #{backingBeanRef.currentObject.studentGroups.size()}
+								            </span>
+								        </ui:fragment>
+								    </h:panelGroup>
+								</div>
+								
+								<ui:fragment rendered="#{backingBeanRef.currentObject.center.id eq null}">
+									<h:selectOneMenu styleClass="form-select" disabled="true">
+							            <f:selectItem itemLabel="#{msg.label_select}" />
+							        </h:selectOneMenu>
+								</ui:fragment>
+								
+								<ui:fragment rendered="#{backingBeanRef.currentObject.center.id ne null}">
+									<button type="button" class="form-select d-flex align-items-center gap-1"
+				                		data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+								        #{msg.label_select}
+								    </button>
+								</ui:fragment>
+								
+								<div class="dropdown-menu dropdown-menu-end" style="width: 350px;">
+									<h:panelGroup id="UsSGDmId" layout="block">
+										<div class="d-flex justify-content-between px-3 py-2">
+											<span class="fw-bold">#{msg.label_filters}</span>
+											<button type="button" class="btn-close" aria-label="Close"
+												onclick="closeDropdownById('UsSGPgId')" />
+										</div>
+										
+										<div class="dropdown-divider"/>
+										
+										<div class="px-4 py-3">
+											<div class="mb-2">
+												<a4j:commandLink value="#{msg.label_select_all}"
+												 	actionListener="#{backingBeanRef['selectAllStudentGroups']()}"
+													styleClass="text-decoration-none"
+												 	render="UsCePgId, UsSGDmId, UsSGSiId" />
+											</div>
+											
+											<a4j:repeat value="#{backingBeanRef.studentGroupList}" var="studentGroup">
+							                    <div class="form-check mb-2">
+							                        <h:selectBooleanCheckbox value="#{studentGroup.selected}"
+							                            styleClass="form-check-input">
+							                            <a4j:ajax event="change"
+										                     listener="#{backingBeanRef['handleStudentGroup'](studentGroup)}"
+										                     render="UsCePgId, UsSGSiId" />
+							                        </h:selectBooleanCheckbox>
+							                        
+							                        <label class="form-check-label">
+							                            <h:outputText value="#{studentGroup.name}" />
+							                        </label>
+							                    </div>
+							                </a4j:repeat>
+										</div>
+									</h:panelGroup>
+								</div>
+							</div>
+					    </div>
+					</div>
+                </div>
+                
+                <div class="modal-footer">
+                	<button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                		#{msg.label_cancel}
+               		</button>
+                		
+				    <a4j:commandButton value="#{backingBeanRef.currentObject.id ne null
+				    	? msg.label_update : msg.label_create}"
+				    	action="#{backingBeanRef['save']()}"
+				    	oncomplete="if(#{!backingBeanRef.showErrorMessage}){
+				    		closeModal('modalUserForm');}"
+				    	styleClass="btn btn-primary"
+				    	render="CeSeLiId, alertContainer" />
+				</div>
+            </div>
+        </div>
+    </div>
+    
+</html>

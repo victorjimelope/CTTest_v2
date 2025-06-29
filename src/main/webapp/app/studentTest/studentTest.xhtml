@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    
+   <h:head>
+   		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	    <title>#{msg.label_app_name}</title>
+	    
+		<h:outputStylesheet library="css_V2" name="bootstrap.css" />
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+			integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
+			crossorigin="anonymous" />
+		<script src="https://kit.fontawesome.com/4a3b582f89.js" crossorigin="anonymous"></script>
+		
+		<h:outputScript library="js" name="jsFunctions.js"/>
+	</h:head>
+	
+	<h:body class="bg-light">
+	
+   		<c:set var="backingBeanRef" value="#{studentTestFormBean}" />
+   	
+   		<h:form id="StTeFrId">
+   		
+   			<ui:fragment rendered="#{!backingBeanRef.testInstanceClosed}">
+	   			<ui:fragment rendered="#{backingBeanRef.studentTest.isAssigned()}" >
+	   				<ui:include src="studentTestStart.xhtml" />
+	   			</ui:fragment>
+	   			
+	   			<ui:fragment rendered="#{backingBeanRef.studentTest.isInProgress()}" >
+	   				<ui:include src="studentTestForm.xhtml" />
+	   			</ui:fragment>
+	   			
+	   			<ui:fragment rendered="#{backingBeanRef.studentTest.isClosed()}" >
+	   				<ui:include src="studentTestFinish.xhtml" />
+	   			</ui:fragment>
+   			</ui:fragment>
+   			
+   			<ui:fragment rendered="#{backingBeanRef.testInstanceClosed}">
+   				<ui:include src="studentTestNotAvailable.xhtml" />
+   			</ui:fragment>
+   			
+	    </h:form>
+		
+		<h:form id="StFnFrId">
+			<ui:include src="modal/modalFinishStudentTest.xhtml" />
+       	</h:form>
+		
+    </h:body>
+    
+</html>

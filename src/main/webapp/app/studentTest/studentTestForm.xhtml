@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    
+    
+    <c:set var="currentQuestion" value="#{backingBeanRef.currentQuestion}" />
+ 	
+ 	<div class="container p-3 py-4 p-md-5">
+	    <div class="row d-flex justify-content-center">
+	        <main class="col-lg-8">
+	        	<ui:include src="panels/student_test_question.xhtml" />
+	        </main>
+	        
+	        <ui:fragment rendered="false">
+		       <aside class="col-md-4 d-none d-lg-block">
+				    <ui:include src="panels/student_test_progress.xhtml" />
+				</aside>
+			</ui:fragment>
+	    </div>
+    </div>
+    
+</html>

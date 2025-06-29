@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j">
+	
+	
+	<div class="text-center mt-5">
+	    <h1>#{msg.label_page_not_found}</h1>
+	
+	    <h:link outcome="welcome" styleClass="btn btn-primary mt-3">
+	        #{msg.label_back_to_home}
+	    </h:link>
+	
+	    <div class="d-flex justify-content-center mt-5">
+	        <h:graphicImage name="img/error404.png" alt="Error 404"
+	            class="img-fluid" style="max-height: 400px;" />
+	    </div>
+	</div>
+    
+</html>

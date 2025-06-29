@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hibernate-mapping>
+
+    <class name="model.Answer" table="answer">
+    
+        <id name="id" column="id">
+            <generator class="identity"/>
+        </id>
+        
+        <many-to-one name="question" column="question_id" not-null="true"/>
+        
+        <property name="order" column="order_" type="integer" />
+        
+        <many-to-one name="image" class="model.Image" column="image_id"
+        	unique="true" not-null="true" cascade="all" fetch="join" lazy="false"/>
+        	
+        <property name="correct" column="correct" type="boolean" />
+        
+        <property name="countTotal" type="integer" insert="false" update="false">
+        	<formula>
+        		(SELECT COUNT(*) FROM student_answer sa WHERE sa.answer_id = id)
+	        </formula>
+	    </property>
+        
+    </class>
+    
+</hibernate-mapping>

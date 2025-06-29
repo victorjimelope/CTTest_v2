@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
+	
+	
+	<ul class="nav nav-tabs">
+		<li class="nav-item">
+			<a4j:commandLink id="MyTeTbId"
+				value="Mi centro"
+				actionListener="#{backingBeanRef['setCurrentTab'](backingBeanRef.myTestsTabId)}"
+				oncomplete="#{backingBeanRef['search']()}"
+				styleClass="nav-link #{backingBeanRef.currentTab eq backingBeanRef.myTestsTabId ? 'active' : ''}"
+				render="@form" />
+		</li>
+	
+		<li class="nav-item">
+			<a4j:commandLink id="ExTeTbId"
+				value="Explorar"
+				actionListener="#{backingBeanRef['setCurrentTab'](backingBeanRef.exploreTabId)}"
+				oncomplete="#{backingBeanRef['search']()}"
+				styleClass="nav-link #{backingBeanRef.currentTab eq backingBeanRef.exploreTabId ? 'active' : ''}"
+				render="@form" />
+		</li>
+	</ul>
+	
+	<div class="row d-flex gy-2 mt-3">
+	    <div class="col-md-6 d-flex gap-3">
+	        <h:inputText value="#{backingBeanRef.filterName}"
+	        	styleClass="form-control"
+	        	p:placeholder="#{msg.label_search}..." />
+	
+	        <a4j:commandLink id="TeSeBtId"
+	        	actionListener="#{backingBeanRef['search']()}"
+	        	styleClass="btn btn-primary"
+	        	render="TeSeLiId">
+	            <i class="bi bi-search" />
+	        </a4j:commandLink>
+	    </div>
+	
+	    <div class="col-md-6">
+	        <div class="row d-flex justify-content-end gy-2">
+	            <div class="col-md-auto col-sm-6">
+	                <div class="dropdown" id="TeSeDrId">
+						<button type="button" class="form-select d-flex align-items-center gap-1"
+						    data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+						    <i class="bi bi-filter"></i>
+						    #{msg.label_filters}
+						</button>
+						
+						<div class="dropdown-menu dropdown-menu-end" style="width: 350px;">
+							<h:panelGroup id="TISeDmId" layout="block">
+								<div class="d-flex justify-content-between px-3 py-2">
+									<span class="fw-bold">#{msg.label_filters}</span>
+									<button type="button" class="btn-close" aria-label="Close"
+										onclick="closeDropdownById('TeSeDrId')" />
+								</div>
+								
+								<div class="dropdown-divider"/>
+								
+								<div class="px-4 py-3">
+									<div class="mb-3">
+										<div class="d-flex justify-content-between align-items-center">
+											<h:outputLabel value="#{msg.label_status}" class="form-label" />
+											
+											<a4j:commandLink value="#{msg.label_clear}"
+											 	actionListener="#{backingBeanRef['setFilterTestStatus'](null)}"
+											 	oncomplete="#{backingBeanRef['search']()}"
+												styleClass="text-decoration-none"
+											 	render="TeSeDmId, TeSeFFId, TeSeLiId"/>
+										</div>
+										
+										<h:selectOneMenu value="#{backingBeanRef.filterTestStatusId}"
+											styleClass="form-select">
+											<f:selectItem itemLabel="#{msg.label_all}"/>
+											<f:selectItems value="#{backingBeanRef.testStatusComboList}"
+												var="x" itemValue="#{x.key}" itemLabel="#{x.value}" />
+											<a4j:ajax event="change"
+												listener="#{backingBeanRef['search']()}"
+												render="TeSeFFId, TeSeLiId"  />
+										</h:selectOneMenu>
+									</div>
+								</div>
+								
+								<div class="dropdown-divider" />
+								
+								<div class="d-flex justify-content-end px-3 py-2">
+									<a4j:commandButton value="Reset"
+										actionListener="#{backingBeanRef['clearFilters']()}"
+										oncomplete="#{backingBeanRef['search']()}"
+										styleClass="btn btn-light"
+										render="TeSeDmId, TeSeFFId, TeSeLiId" />
+								</div>
+							</h:panelGroup>
+						</div>
+					</div>
+	            </div>
+	            
+	            <div class="col-md-auto col-sm-6">
+	                <h:selectOneMenu value="#{backingBeanRef.sortTypeId}"
+	                	styleClass="form-select">
+	                    <f:selectItems value="#{backingBeanRef.sortTypeComboList}"
+	                    	var="x" itemValue="#{x.key}" itemLabel="#{x.value}" />
+	                    <a4j:ajax event="change"
+	                    	listener="#{backingBeanRef['search']()}"
+	                    	render="TeSeLiId, TeSeFFId" />
+	                </h:selectOneMenu>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+
+	<h:panelGroup id="TeSeFFId" layout="block">
+		<ui:fragment rendered="#{backingBeanRef.filterTestStatus ne null}">
+			<div class="row mt-3">
+				<div class="col-auto">
+					<div class="d-flex align-items-center border p-2 rounded">
+					  <span class="me-2">
+					  	#{backingBeanRef.filterTestStatus.title}
+					  </span>
+					  
+					  <a4j:commandLink actionListener="#{backingBeanRef['setFilterTestStatus'](null)}"
+					  	  oncomplete="#{backingBeanRef['search']()}"
+						  styleClass="btn-close btn-close-sm btn-sm"
+						  render="TeSeLiId, TeSeFiId"/>
+					</div>
+				</div>
+			</div>
+		</ui:fragment>
+	</h:panelGroup>
+	
+</html>

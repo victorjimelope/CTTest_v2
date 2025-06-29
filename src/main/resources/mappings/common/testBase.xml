@@ -1,0 +1,12 @@
+<!-- common fragment xml will be reused from other hbm.xml files -->
+
+<property name="centerId" column="center_id" type="integer" />
+        
+<property name="name" column="name" type="string" />
+
+<property name="description" column="description" type="string" />
+
+<property name="type" column="type_id" type="model.enums.usertype.TestTypeUserType"/>
+
+<property name="status" column="status_id" type="model.enums.usertype.TestStatusUserType"/>
+

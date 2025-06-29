@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:a4j="http://richfaces.org/a4j">
+	
+	
+	<div class="row py-2">
+		<div class="col-lg-8">
+			<a4j:repeat value="#{answers}" var="answer" rowKeyVar="rkvA">
+				<div class="row py-2">
+			    	<div class="col">
+			    	
+			    		<c:set var="percentage" value="#{backingBeanRef['getPercentage'](
+			    			answer.countTotal, question.countTotal)}" />
+			    		
+			    		Opción #{rkvA+1}
+			    		<div class="progress" role="progressbar">
+							<div class="progress-bar bg-#{answer.correct ? 'success' : 'danger'}"
+								style="width: #{percentage}%" />
+						</div>
+						#{answer.countTotal} Resp. - 
+						<strong>#{percentage}%</strong>
+						
+			    	</div>
+		    	</div>
+			</a4j:repeat>
+		</div>
+		
+		<div class="col-lg-4 d-flex align-items-center">
+		    <div class="w-100">
+		        <div class="card">
+		            <div class="card-body">
+		            
+		                <strong>Estadísticas</strong>
+		                <hr/>
+		                
+		                <div class="py-2">
+			                Correctas
+			                <div class="d-flex align-items-center gap-2">
+						        <div class="rounded-2 bg-success"
+						        	style="width: 16px; height: 16px;" />
+						        <strong>#{question.countCorrect}</strong>
+						    </div>
+					    </div>
+					    
+					    <div class="py-2">
+						    Incorrectas
+						    <div class="d-flex align-items-center gap-2">
+						        <div class="rounded-2 bg-danger"
+						        	style="width: 16px; height: 16px;" />
+						       <strong> #{question.countWrong}</strong>
+						    </div>
+					    </div>
+					    
+					    <div class="py-2">
+						    Acierto
+						    <div class="d-flex align-items-center gap-2">
+						    	<strong>
+						    		 #{backingBeanRef['getPercentage'](
+						    		 		question.countCorrect, question.countTotal)} %
+						    	 </strong>
+						    </div>
+					    </div>
+		            </div>
+		        </div>
+		    </div>
+		</div>
+
+	</div>
+	
+</html>

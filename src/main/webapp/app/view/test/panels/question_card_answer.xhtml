@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:a4j="http://richfaces.org/a4j">
+	
+	
+	<div class="row">
+		 <a4j:repeat value="#{answers}" var="answer" rowKeyVar="rkvA">
+			 <div class="#{question.answersLayout.colClass}">
+			 	<ui:include src="/app/common/image_card.xhtml">
+				    <ui:param name="imageDataAsBase64" value="#{answer.image['getImageDataAsBase64']()}" />
+				    <ui:param name="showSetCorrectButton" value="true" />
+    				<ui:param name="isCorrect" value="#{answer.correct}" />
+					<ui:param name="showDeleteButton" value="true" />
+    				<ui:param name="deleteButtonTitle" value="#{msg.label_delete_answer}" />
+				</ui:include>
+		    </div>
+		</a4j:repeat>
+		
+		<ui:fragment rendered="#{question.answers.size() lt 4}">
+			<div class="col-md-3">
+				<ui:include src="question_card_add_image.xhtml" />
+		    </div>
+		</ui:fragment>
+	</div>
+</html>

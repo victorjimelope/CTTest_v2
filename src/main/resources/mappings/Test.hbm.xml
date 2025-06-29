@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd"
+	[ <!ENTITY commonFields SYSTEM "classpath://mappings/common/commonFields.xml">
+	  <!ENTITY testBase SYSTEM "classpath://mappings/common/testBase.xml"> ]>
+<hibernate-mapping>
+
+	<class name="model.TestBase" table="test">
+    
+    	&commonFields;
+    	
+    	&testBase;
+    	
+    </class>
+
+    <class name="model.Test" table="test">
+    
+    	&commonFields;
+    	
+    	&testBase;
+         
+        <list name="questions" cascade="all-delete-orphan" inverse="true" fetch="join" lazy="false">
+	    	<key column="test_id"/>
+            <index column="order_"/>
+            <one-to-many class="model.Question"/>
+        </list>
+        
+    </class>
+    
+</hibernate-mapping>

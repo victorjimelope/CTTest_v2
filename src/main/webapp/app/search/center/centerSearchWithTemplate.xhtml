@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+	
+	
+    <ui:composition template="/template/app_template.xhtml">
+        <ui:define name="title">#{msg.label_centers}</ui:define>
+        <ui:define name="body">
+        	
+        	<c:set var="backingBeanRef" value="#{centerSearchBean}" />
+        	
+        	<h:form id="CeSeFrId">
+	        	<ui:include src="centerSearch.xhtml" />
+        	</h:form>
+        	
+        	<h:form id="MoCeFrId">
+	        	<ui:include src="modal/modalCenterForm.xhtml" />
+        	</h:form>
+        	
+        	<h:form id="MoCeDeId">
+	        	<ui:include src="modal/modalCenterDelete.xhtml" />
+        	</h:form>
+        	
+        </ui:define>
+    </ui:composition>
+	
+</html>

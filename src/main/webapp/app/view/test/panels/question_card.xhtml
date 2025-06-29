@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:a4j="http://richfaces.org/a4j">
+	
+	
+	<c:set var="answers" value="#{question.answers}" />
+	
+	<div class="card mb-3">
+		<ui:include src="question_card_header.xhtml" />
+		
+		<ui:fragment rendered="#{question.selected}">
+			<ui:include src="question_card_body.xhtml" />
+		</ui:fragment>
+	</div>
+	
+</html>

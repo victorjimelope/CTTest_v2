@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:a4j="http://richfaces.org/a4j">
+	
+	
+    <div class="card h-100 d-flex border border-4 #{isSelected ? 'border-primary' : 'border-white'}">
+		<div class="d-flex justify-content-center align-items-center w-100 h-100 p-4">
+			<h:graphicImage value="#{imageDataAsBase64}"
+				styleClass="img-thumbnail border-0" />
+		</div>
+		
+		<div class="card-img-overlay d-flex justify-content-end align-items-start gap-2 ">
+		    <ui:fragment rendered="#{showSetAnswerButton}">
+		        <a4j:commandLink id="TeSeAnId"
+		            title="#{msg.label_set_as_correct}"
+		            actionListener="#{backingBeanRef['handleCurrentQuestion'](isSelected ? null : answerId)}"
+		            styleClass="btn #{isSelected ? 'btn-primary' : 'btn-outline-primary'} btn-sm"
+		            render="@form">
+		            <i class="fa-solid fa-check"></i>
+		        </a4j:commandLink>
+		    </ui:fragment>
+		
+		    <ui:fragment rendered="#{showSetCorrectButton}">
+		        <a4j:commandLink id="TeAnCoId"
+		            title="#{msg.label_set_as_correct}"
+		            actionListener="#{backingBeanRef.setAnswerAsCorrect(rkv, rkvA)}"
+		            styleClass="btn #{isCorrect ? 'btn-warning' : 'btn-outline-warning'} btn-sm"
+		            render="@form">
+		            <i class="bi bi-star-fill" />
+		        </a4j:commandLink>
+		    </ui:fragment>
+		
+		    <ui:fragment rendered="#{showDeleteButton}">
+		        <a4j:commandLink id="TeDeImId"
+		            title="#{deleteButtonTitle}"
+		            actionListener="#{backingBeanRef.deleteImage(rkv, rkvA)}"
+		            styleClass="btn btn-danger btn-sm"
+		            render="@form">
+		            <i class="bi bi-trash" />
+		        </a4j:commandLink>
+		    </ui:fragment>
+		</div>
+	</div>
+    
+</html>

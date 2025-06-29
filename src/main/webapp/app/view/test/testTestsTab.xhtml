@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j">
+	
+	
+	<div class="row">
+		<div class="col">
+			<a4j:commandLink id="TeNwInId"
+				value="Asignar"
+	            oncomplete="openModal('modalNewTestInstance');"
+	            styleClass="btn btn-primary"
+	            render="MoNwInId" />
+		</div>
+	</div>
+	
+	<ui:fragment rendered="#{empty backingBeanRef.testInstancePagination.objectList}">
+		#{msg.label_no_results_found}
+	</ui:fragment>
+	
+	<ui:fragment rendered="#{!empty backingBeanRef.testInstancePagination.objectList}">
+		<div class="table-responsive">
+			<table class="table table-borderless table-hover">
+				<thead>
+					<tr>
+						<th scope="col" class="col-2">PIN</th>
+						<th scope="col" class="col-2">#{msg.label_status}</th>
+						<th scope="col" class="col-3">#{msg.label_class}</th>
+						<th scope="col" class="col-3">#{msg.label_user}</th>
+						<th scope="col" class="col-2">#{msg.label_date}</th>
+					</tr>
+				</thead>
+				
+				<tbody>
+					<a4j:repeat value="#{backingBeanRef.testInstancePagination.currentPageList}" var="instance">
+						<tr>
+							<th scope="row">
+								<h:link value="#{instance.pin}"
+									outcome="#{applicationStatusBean.testInstanceViewWithTemplateURI}"
+									styleClass="link-dark " >
+									<f:param name="id" value="#{instance.id}" />
+								</h:link>
+							</th>
+							<td>
+								<span class="badge bg-#{instance.status.color}-subtle
+						   			border border-#{instance.status.color}-subtle
+						   			text-#{instance.status.color}-emphasis rounded-pill p-2">
+						   		 	#{instance.status.title}
+						   		</span>
+							</td>
+							<td>#{instance.studentGroup.name}</td>
+							<td>#{instance.assignedBy.username}</td>
+							<td>#{instance.assignedDate}</td>
+						</tr>
+					</a4j:repeat>
+				</tbody>
+			</table>
+		</div>
+		
+		<ui:include src="/app/common/generic_pagination.xhtml">
+			<ui:param name="pagination" value="#{backingBeanRef.testInstancePagination}" />
+			<ui:param name="renderList" value="@form" />
+		</ui:include>
+		
+	</ui:fragment>
+	
+</html>

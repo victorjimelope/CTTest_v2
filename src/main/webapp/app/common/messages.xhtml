@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j">
+	
+	
+   	<h:panelGroup id="alertContainer">
+	    <div class="position-fixed bottom-0 end-0 p-3 d-flex flex-column gap-2"
+	         style="z-index: 1100; width: 450px;">
+	        <ui:repeat value="#{facesContext.messageList}" var="fmsg">
+	            <div class="alert 
+	                #{fmsg.severity.ordinal == 0 ? 'alert-success' : 
+	                   fmsg.severity.ordinal == 1 ? 'alert-warning' : 
+	                   fmsg.severity.ordinal == 2 ? 'alert-danger' : ''} 
+	                alert-dismissible fade show shadow w-100 d-flex align-items-center gap-2"
+	                 role="alert">
+	                 
+	                <i class="bi 
+	                    #{fmsg.severity.ordinal == 0 ? 'bi-check-circle-fill text-success' : 
+	                      fmsg.severity.ordinal == 1 ? 'bi-exclamation-circle-fill text-warning' :
+	                      fmsg.severity.ordinal == 2 ? 'bi bi-x-circle-fill text-danger' : ''}
+	                    fs-1 flex-shrink-0"></i>
+	
+	                <div class="flex-grow-1 d-flex flex-column">
+	                    <span>#{fmsg.detail}</span>
+	                </div>
+	
+	                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	            </div>
+	        </ui:repeat>
+	    </div>
+	</h:panelGroup>
+		
+</html>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd"
+	[ <!ENTITY commonFields  SYSTEM "classpath://mappings/common/commonFields.xml">]>
+<hibernate-mapping>
+
+    <class name="model.StudentTest" table="student_test">
+    
+        &commonFields;
+        
+        <property name="testInstanceId" column="test_instance_id" type="integer" />
+        
+        <many-to-one name="student" class="model.Student" column="student_id"
+        	not-null="true" fetch="join" lazy="false"/>
+        
+        <property name="status" column="status_id" not-null="true"
+        	type="model.enums.usertype.StudentTestStatusUserType"/>
+        
+        <property name="startDate" column="start_date" type="java.time.LocalDateTime" />
+        
+        <property name="finishDate" column="finish_date" type="java.time.LocalDateTime" />
+        
+        <property name="score" type="java.math.BigDecimal">
+			<column name="score" sql-type="decimal"/>
+		</property>
+		
+        <property name="comment" column="comment" type="string" />
+        
+        <map name="studentAnswers" table="student_answer" lazy="false">
+		    <key column="student_test_id"/> 
+		    <map-key column="question_id" type="integer"/>
+		    <one-to-many class="model.StudentAnswer"/>
+		</map>
+		
+    </class>
+    
+</hibernate-mapping>

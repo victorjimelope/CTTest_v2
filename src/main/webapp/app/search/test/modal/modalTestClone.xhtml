@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+	
+	
+	<div class="modal fade" id="modalTestClone" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">#{msg.label_clone_test}</h5>
+                    <button type="button" class="btn-close"
+                    	data-bs-dismiss="modal" aria-label="#{msg.label_close}" />
+                </div>
+                
+                <div class="modal-body">
+                     <div class="mb-3">
+				        <h:outputLabel value="#{msg.label_name}"
+				        	styleClass="form-label" />
+				        <h:inputText value="#{backingBeanRef.currentObject.name}"
+				        	styleClass="form-control" />
+				    </div>
+				    
+				    <div class="mb-3">
+				        <h:outputLabel value="#{msg.label_description} (#{fn:toLowerCase(msg.label_optional)})"
+				        	styleClass="form-label" />
+				        <h:inputTextarea value="#{backingBeanRef.currentObject.description}"
+				        	styleClass="form-control" style="resize: none;" rows="4"/>
+				    </div>
+                </div>
+                
+                <div class="modal-footer">
+                	<button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                		#{msg.label_cancel}
+               		</button>
+               		
+				    <a4j:commandButton value="#{msg.label_clone}"
+				    	action="#{backingBeanRef['cloneTest']()}"
+				    	oncomplete="closeModal('modalTestClone');"
+				    	styleClass="btn btn-primary"
+				    	render="alertContainer" />
+				</div>
+            </div>
+        </div>
+    </div>
+    
+</html>

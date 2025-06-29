@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+	
+	
+    <ui:composition template="/template/app_template.xhtml">
+        <ui:define name="title">#{msg.label_classes}</ui:define>
+        <ui:define name="body">
+        	
+        	<c:set var="backingBeanRef" value="#{studentGroupSearchBean}" />
+        	
+        	<h:form id="SGSeFrId">
+	        	<ui:include src="studentGroupSearch.xhtml" />
+        	</h:form>
+        	
+        	<h:form id="MoSGFrId">
+	        	<ui:include src="modal/modalStudentGroupForm.xhtml" />
+        	</h:form>
+        	
+        	<h:form id="MoSGDeId">
+	        	<ui:include src="modal/modalStudentGroupDelete.xhtml" />
+        	</h:form>
+        	
+        </ui:define>
+    </ui:composition>
+	
+</html>

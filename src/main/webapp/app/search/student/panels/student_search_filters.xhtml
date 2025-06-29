@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
+	
+	
+	
+	<div class="row d-flex justify-content-between mt-3">
+		<div class="col-6 d-flex gap-3">
+			<h:inputText value="#{backingBeanRef.filterName}"
+				styleClass="form-control"
+				p:placeholder="#{msg.label_search}..." />
+			
+			<a4j:commandLink id="StSeBtId"
+				actionListener="#{backingBeanRef['search']()}"
+				styleClass="btn btn-primary"
+				render="StSeLiId">
+				<i class="bi bi-search" />
+			</a4j:commandLink>
+		</div>
+		
+		<div class="col-auto d-flex gap-3 align-items-center">
+			<div class="dropdown" id="StSeDrId">
+				<button type="button" class="form-select d-flex align-items-center gap-1"
+				    data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+				    <i class="bi bi-filter"></i>
+				    #{msg.label_filters}
+				</button>
+				
+				
+				<div class="dropdown-menu dropdown-menu-end" style="width: 350px;">
+					<h:panelGroup id="StSeDmId" layout="block">
+						<div class="d-flex justify-content-between px-3 py-2">
+							<span class="fw-bold">#{msg.label_filters}</span>
+							<button type="button" class="btn-close" aria-label="Close"
+								onclick="closeDropdownById('StSeDrId')" />
+						</div>
+						
+						<div class="dropdown-divider"/>
+						
+						<div class="px-4 py-3">
+							<div class="mb-3">
+								<div class="d-flex justify-content-between align-items-center">
+									<h:outputLabel value="#{msg.label_class}" class="form-label" />
+									
+									<a4j:commandLink value="#{msg.label_clear}"
+									 	actionListener="#{backingBeanRef['setFilterStudentGroupId'](null)}"
+									 	oncomplete="#{backingBeanRef['search']()}"
+										styleClass="text-decoration-none"
+									 	render="StSeDmId, StSeFFId, StSeLiId"/>
+								</div>
+								
+								<h:selectOneMenu value="#{backingBeanRef.filterStudentGroupId}"
+									styleClass="form-select">
+									<f:selectItem itemLabel="#{msg.label_all}"/>
+									<f:selectItems value="#{backingBeanRef.studentGroupComboList}"
+										var="x" itemValue="#{x.key}" itemLabel="#{x.value}" />
+									<a4j:ajax event="change"
+										listener="#{backingBeanRef['search']()}"
+										render="StSeFFId, StSeLiId"  />
+								</h:selectOneMenu>
+							</div>
+						</div>
+						
+						<div class="dropdown-divider" />
+						
+						<div class="d-flex justify-content-end px-3 py-2">
+							<a4j:commandButton value="Reset"
+								actionListener="#{backingBeanRef['clearFilters']()}"
+								oncomplete="#{backingBeanRef['search']()}"
+								styleClass="btn btn-light"
+								render="StSeDmId, StSeFFId, StSeLiId" />
+						</div>
+					</h:panelGroup>
+				</div>
+			</div>
+			
+			<h:selectOneMenu value="#{backingBeanRef.sortTypeId}"
+				styleClass="form-select">
+				<f:selectItems value="#{backingBeanRef.sortTypeComboList}"
+					var="x" itemValue="#{x.key}" itemLabel="#{x.value}" />
+				<a4j:ajax event="change"
+					listener="#{backingBeanRef['search']()}"
+					render="StSeLiId"  />
+			</h:selectOneMenu>
+		</div>
+	</div>
+	
+	<h:panelGroup id="StSeFFId" layout="block">
+		<ui:fragment rendered="#{backingBeanRef.filterStudentGroupId ne null}">
+			<div class="row mt-3">
+				<div class="col-auto">
+					<div class="d-flex align-items-center border p-2 rounded">
+					  <span class="me-2">
+					  	#{backingBeanRef.filterStudentGroupName}
+					  </span>
+					  
+					  <a4j:commandLink actionListener="#{backingBeanRef['setFilterStudentGroupId'](null)}"
+						  styleClass="btn-close btn-close-sm btn-sm"
+						  render="StSeFiId, StSeLiId"/>
+					</div>
+				</div>
+			</div>
+		</ui:fragment>
+	</h:panelGroup>
+	
+</html>

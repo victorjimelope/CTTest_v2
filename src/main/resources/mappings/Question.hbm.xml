@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hibernate-mapping>
+
+    <class name="model.Question" table="question">
+    
+        <id name="id" column="id">
+            <generator class="identity"/>
+        </id>
+        
+        <many-to-one name="test" column="test_id" not-null="true"/>
+        
+        <property name="order" column="order_" type="integer" />
+        
+        <property name="question" column="question" type="string" />
+        
+        <many-to-one name="image" class="model.Image" column="image_id"
+        	unique="true" cascade="all" fetch="join" lazy="false"/>
+        
+        <property name="answersLayout" column="layout_type_id" not-null="true"
+        	type="model.enums.usertype.AnswersLayoutTypeUserType"/>
+        	
+        <list name="answers" cascade="all-delete-orphan" inverse="true" fetch="join" lazy="false">
+            <key column="question_id"/>
+            <index column="order_"/>
+            <one-to-many class="model.Answer"/>
+        </list>
+        
+        <property name="countTotal" type="integer" insert="false" update="false">
+        	<formula>
+        		(SELECT COUNT(*) FROM student_answer sa WHERE sa.question_id = id)
+	        </formula>
+	    </property>
+        
+    </class>
+    
+    <sql-query name="getQuestionsWithStudentAnswer">
+	    <return alias="q" class="model.Question"/>
+	    <return alias="sa" class="model.StudentAnswer"/>
+	    
+	    <![CDATA[
+	        SELECT {q.*}, {sa.*}
+	        FROM question q
+	        LEFT JOIN student_answer sa
+	        	ON q.id = sa.question_id 
+	        	AND sa.student_test_id = :studentTestId
+	        WHERE q.test_id = (SELECT test_id
+	        	FROM student_test
+	        	WHERE id = :studentTestId)
+	        ORDER BY q.id
+	    ]]>
+	</sql-query>
+	
+   <!--  
+    <sql-query name="getQuestionsWithStudentAnswer">
+	    <return alias="q" class="model.Question"/>
+	    <return alias="sa" class="model.StudentAnswer"/>
+	    
+	    <![CDATA[
+	        SELECT q.*, sa.*
+	        FROM question q
+	        LEFT JOIN student_answer sa
+	        	ON q.id = sa.question_id 
+	            AND sa.student_test_id = :studentTestId
+	        WHERE q.test_id = (SELECT test_id
+	        	FROM student_test st
+	        	WHERE st.id = :studentTestId)
+	        ORDER BY q.id
+	    ]]>
+	</sql-query> -->
+    
+</hibernate-mapping>

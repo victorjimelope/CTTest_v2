@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j">
+	
+	
+	<ui:include src="panels/test_instance_header.xhtml" />
+	
+	<div class="card mt-3">
+		<div class="card-body">
+			<ui:fragment rendered="#{backingBeanRef.currentTab eq backingBeanRef['getResultsTabId']()}">
+				<h:panelGroup id="TISeFiId" layout="block">
+					<ui:include src="panels/test_instance_filters.xhtml" />
+				</h:panelGroup>
+				
+				<h:panelGroup id="TISeLiId" layout="block" class="mt-3">
+					<ui:include src="panels/test_instance_list.xhtml" />
+				</h:panelGroup>
+			</ui:fragment>
+		</div>
+	</div>
+	
+</html>

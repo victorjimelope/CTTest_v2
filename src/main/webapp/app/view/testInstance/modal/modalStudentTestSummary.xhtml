@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+	
+	
+	<div class="modal fade" id="modalStudentTestSummary" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Test realizado</h5>
+                    <button type="button" class="btn-close"
+                    	data-bs-dismiss="modal" aria-label="#{msg.label_close}" />
+                </div>
+                
+                <div class="modal-body">
+                	<div class="mb-3">
+                		<div>#{msg.label_student}: #{backingBeanRef.currentStudentTest.student.name}</div>
+				        <div>#{msg.label_student_id}: #{backingBeanRef.currentStudentTest.student.identifier}</div>
+				        <div>#{msg.label_class}: #{backingBeanRef.currentStudentTest.student.studentGroup.name}</div>
+				    </div>
+                
+                	<div class="row mb-3 g-2">
+					    <a4j:repeat value="#{backingBeanRef.currentObjectTest.questions}" var="question">
+					    	
+					    	<c:set var="answerId" value="#{backingBeanRef.currentStudentTest['getAnswerId'](question.id)}" />
+							
+							<div class="col-2">
+								<ui:fragment rendered="#{answerId eq null}">
+									<div class="bg-secondary text-white text-center rounded p-2">
+						                #{question.order + 1}
+						            </div>
+								</ui:fragment>
+								
+								<ui:fragment rendered="#{answerId ne null}">
+									<ui:fragment rendered="#{answerId eq question.getCorrectAnswerId()}">
+										<div class="bg-success text-white text-center rounded p-2">
+							                #{question.order + 1}
+							            </div>
+									</ui:fragment>
+									
+									<ui:fragment rendered="#{answerId ne question.getCorrectAnswerId()}">
+										<div class="bg-danger text-white text-center rounded p-2">
+							                #{question.order + 1}
+							            </div>
+									</ui:fragment>
+								</ui:fragment>
+							</div>
+							
+					    </a4j:repeat>
+					</div>
+					
+                    <div class="mb-3">
+				        <h:outputLabel value="#{msg.label_comment}"
+				        	styleClass="form-label" />
+				        <h:inputTextarea value="#{backingBeanRef.currentStudentTest.comment}"
+				        	styleClass="form-control" style="resize: none;" rows="4"/>
+				    </div>
+                </div>
+                
+                <div class="modal-footer">
+                	<button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                		#{msg.label_cancel}
+               		</button>
+                		
+				    <a4j:commandButton value="#{msg.label_save}"
+				    	actionListener="#{backingBeanRef['saveCurrentStudentTest']()}"
+				    	oncomplete="closeModal('modalStudentTestSummary');"
+				    	styleClass="btn btn-primary" />
+				</div>
+            </div>
+        </div>
+    </div>
+    
+</html>

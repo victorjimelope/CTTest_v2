@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd"
+	[ <!ENTITY commonFields  SYSTEM "classpath://mappings/common/commonFields.xml">]>
+<hibernate-mapping>
+
+    <class name="model.User" table="user">
+    
+         &commonFields;
+         
+        <property name="username" column="username" type="string" />
+        
+        <property name="password" column="password" type="string" />
+        
+        <property name="admin" column="admin" type="boolean" />
+        
+        <many-to-one name="center" class="model.Center"
+       		column="center_id" fetch="join" lazy="false"/>
+        	
+    	<set name="studentGroups" table="rel_user_student_group"
+    		fetch="join" lazy="false" order-by="student_group_id">
+		    <key column="user_id"/>
+		    <many-to-many column="student_group_id" class="model.StudentGroup"/>
+		</set>
+		
+    </class>
+    
+</hibernate-mapping>

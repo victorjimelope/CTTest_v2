@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="model.LoggedUser" table="user">
+    
+        <id name="id" column="id">
+        	<generator class="identity"/>
+		</id>
+         
+        <property name="username" column="username" type="string" />
+        
+        <property name="admin" column="admin" type="boolean" />
+        
+        <property name="centerId" column="center_id" type="integer" />
+        
+        <bag name="studentGroupIdList" table="rel_user_student_group" lazy="false">
+		    <key column="user_id"/>
+		    <element column="student_group_id" type="integer"/>
+		</bag>
+		
+    </class>
+    
+</hibernate-mapping>

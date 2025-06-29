@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j">
+	
+	
+	<div class="row mb-3">
+		<div class="col h4 text-secondary">
+			<i class="bi bi-house-fill" /> / #{msg.label_students}
+		</div>
+	</div>
+	
+	<div class="row mt-3 mb-3">
+		<div class="col">
+			<h2>#{msg.label_students}</h2>
+		</div>
+		
+		<div class="col d-flex align-items-center justify-content-end">
+			 <a4j:commandLink id="StSeNwId"
+	            title="#{msg.label_new_student}"
+	            actionListener="#{backingBeanRef['initCurrentObject']()}"
+	            oncomplete="openModal('modalStudentForm');"
+	            styleClass="btn btn-primary"
+	            render="@form, MoStFrId">
+	            <i class="bi bi-plus-lg fs-5" />
+	        </a4j:commandLink>
+		</div>
+	</div>
+	
+</html>

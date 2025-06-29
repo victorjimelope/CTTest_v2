@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+	
+	<h:head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	    <title><ui:insert name="title">#{msg.label_app_name}</ui:insert></title>
+	
+		<h:outputStylesheet library="css_V2" name="bootstrap.css" />
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+			integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
+			crossorigin="anonymous" />
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+		<script src="https://kit.fontawesome.com/4a3b582f89.js" crossorigin="anonymous"></script>
+		
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+    	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+		
+		<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+		
+		<h:outputScript library="js" name="convertToBase64.js"/>
+		<h:outputScript library="js" name="jsFunctions.js"/>
+		<h:outputScript library="js" name="drawCircularProgressBar.js"/>
+	</h:head>
+	
+    <h:body>
+    
+    	<ui:include src="/app/common/messages.xhtml" />
+    
+    	<div class="container-lg p-3 p-lg-0">
+		    <div class="row">
+		        <nav class="col-lg-3 col-xl-2">
+		            <ui:include src="app_sidebar_lg.xhtml" />
+		            <ui:include src="app_sidebar_md.xhtml" />
+		        </nav>
+		        
+		        <main class="col-lg-9 col-xl-10 py-4 p-lg-5">
+		           <ui:insert name="body">Body content missed</ui:insert>
+		        </main>
+		    </div>
+		</div>
+		
+		<h:form id="MoLOutId">
+        	<ui:include src="/app/common/modal/modalLogout.xhtml" />
+       	</h:form>
+       	
+    </h:body>
+    
+</html>
