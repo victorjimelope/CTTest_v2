@@ -1,5 +1,7 @@
 package util;
 
+import static constants.Constants.dd_MM_yyyy;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -13,7 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 @FacesConverter("localDateConverter")
 public class LocalDateConverterUtil implements Converter {
 
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(dd_MM_yyyy);
 
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {

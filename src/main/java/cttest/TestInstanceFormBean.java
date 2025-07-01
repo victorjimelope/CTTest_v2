@@ -137,10 +137,10 @@ public class TestInstanceFormBean extends BaseManagedBean implements Serializabl
 		} catch (Exception e) {
 			
 			StackTraceElement element = e.getStackTrace()[0];
-			logger.error("Exception in Class: {}, Method: {}, Type: {}, Message: {}, Cause: {}",
-					element.getClassName(), element.getMethodName(), 
-					e.getClass().getName(), e.getMessage(), 
-					e.getCause() != null ? e.getCause() : "Unknown");
+			
+			logger.error("Exception in Class: {}, Method: {}, Type: {}, Message: {}",
+					element.getClassName(), element.getMethodName(),
+					e.getClass().getName(), e.getMessage());
 			
 			FacesContext.getCurrentInstance().addMessage(null, 
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, 
@@ -160,10 +160,10 @@ public class TestInstanceFormBean extends BaseManagedBean implements Serializabl
 		} catch (Exception e) {
 			
 			StackTraceElement element = e.getStackTrace()[0];
-			logger.error("Exception in Class: {}, Method: {}, Type: {}, Message: {}, Cause: {}",
-					element.getClassName(), element.getMethodName(), 
-					e.getClass().getName(), e.getMessage(), 
-					e.getCause() != null ? e.getCause() : "Unknown");
+			
+			logger.error("Exception in Class: {}, Method: {}, Type: {}, Message: {}",
+					element.getClassName(), element.getMethodName(),
+					e.getClass().getName(), e.getMessage());
 			
 			FacesContext.getCurrentInstance().addMessage(null, 
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, 
@@ -187,10 +187,10 @@ public class TestInstanceFormBean extends BaseManagedBean implements Serializabl
 		} catch (Exception e) {
 			
 			StackTraceElement element = e.getStackTrace()[0];
-			logger.error("Exception in Class: {}, Method: {}, Type: {}, Message: {}, Cause: {}",
-					element.getClassName(), element.getMethodName(), 
-					e.getClass().getName(), e.getMessage(), 
-					e.getCause() != null ? e.getCause() : "Unknown");
+			
+			logger.error("Exception in Class: {}, Method: {}, Type: {}, Message: {}",
+					element.getClassName(), element.getMethodName(),
+					e.getClass().getName(), e.getMessage());
 			
 			FacesContext.getCurrentInstance().addMessage(null, 
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, 
@@ -372,10 +372,10 @@ public class TestInstanceFormBean extends BaseManagedBean implements Serializabl
 		} catch (Exception e) {
 			
 			StackTraceElement element = e.getStackTrace()[0];
-			logger.error("Exception in Class: {}, Method: {}, Type: {}, Message: {}, Cause: {}",
-					element.getClassName(), element.getMethodName(), 
-					e.getClass().getName(), e.getMessage(), 
-					e.getCause() != null ? e.getCause() : "Unknown");
+			
+			logger.error("Exception in Class: {}, Method: {}, Type: {}, Message: {}",
+					element.getClassName(), element.getMethodName(),
+					e.getClass().getName(), e.getMessage());
 			
 			FacesContext.getCurrentInstance().addMessage(null, 
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, 

@@ -208,10 +208,10 @@ public class StudentTestBLImpl extends GenericHibernateBLImpl<StudentTest, Excep
 		} catch (Exception e) {
 			
 			StackTraceElement element = e.getStackTrace()[0];
-			logger.error("Exception in Class: {}, Method: {}, Type: {}, Message: {}, Cause: {}",
-					element.getClassName(), element.getMethodName(), 
-					e.getClass().getName(), e.getMessage(), 
-					e.getCause() != null ? e.getCause() : "Unknown");
+			
+			logger.error("Exception in Class: {}, Method: {}, Type: {}, Message: {}",
+					element.getClassName(), element.getMethodName(),
+					e.getClass().getName(), e.getMessage());
 			
 			throw new Exception(e);
 			
@@ -252,10 +252,10 @@ public class StudentTestBLImpl extends GenericHibernateBLImpl<StudentTest, Excep
 		} catch (Exception e) {
 			
 			StackTraceElement element = e.getStackTrace()[0];
-			logger.error("Exception in Class: {}, Method: {}, Type: {}, Message: {}, Cause: {}",
-					element.getClassName(), element.getMethodName(), 
-					e.getClass().getName(), e.getMessage(), 
-					e.getCause() != null ? e.getCause() : "Unknown");
+			
+			logger.error("Exception in Class: {}, Method: {}, Type: {}, Message: {}",
+					element.getClassName(), element.getMethodName(),
+					e.getClass().getName(), e.getMessage());
 			
 			throw new Exception(e);
 			
@@ -288,10 +288,10 @@ public class StudentTestBLImpl extends GenericHibernateBLImpl<StudentTest, Excep
 //		} catch (Exception e) {
 //			
 //			StackTraceElement element = e.getStackTrace()[0];
-//			logger.error("Exception in Class: {}, Method: {}, Type: {}, Message: {}, Cause: {}",
-//					element.getClassName(), element.getMethodName(), 
-//					e.getClass().getName(), e.getMessage(), 
-//					e.getCause() != null ? e.getCause() : "Unknown");
+//			
+//			logger.error("Exception in Class: {}, Method: {}, Type: {}, Message: {}",
+//					element.getClassName(), element.getMethodName(),
+//					e.getClass().getName(), e.getMessage());
 //			
 //		}
 //		

@@ -26,17 +26,18 @@ public final class ResUtil {
         } catch (MissingResourceException e) {
         	
         	StackTraceElement element = e.getStackTrace()[0];
-			logger.error("Exception in Class: {}, Method: {}, Type: {}",
-	                    element.getClassName(), element.getMethodName(), 
-	                    e.getClass().getName());
-        	
+			
+			logger.error("Exception in Class: {}, Method: {}, Type: {}, Message: {}",
+					element.getClassName(), element.getMethodName(),
+					e.getClass().getName(), e.getMessage());
+			
         } catch (Exception e) {
         	
         	StackTraceElement element = e.getStackTrace()[0];
-			logger.error("Exception in Class: {}, Method: {}, Type: {}, Message: {}, Cause: {}",
-	                    element.getClassName(), element.getMethodName(), 
-	                    e.getClass().getName(), e.getMessage(), 
-	                    e.getCause() != null ? e.getCause() : "Unknown");
+			
+			logger.error("Exception in Class: {}, Method: {}, Type: {}, Message: {}",
+					element.getClassName(), element.getMethodName(),
+					e.getClass().getName(), e.getMessage());
 			
         }
         

@@ -2,10 +2,6 @@ package constants;
 
 public final class Constants {
 	
-	// Variable temporal hasta solucionar Login
-	//public static final Integer CURRENT_USER_TMP = 1000;
-	//public static final Integer CURRENT_CENTER_TMP = 1;
-
 	public static final String LOGGED_USER = "loggedUser";
 	public static final boolean EMPTY_OBJECT = true;
 	

@@ -60,7 +60,7 @@ public class HomeBean implements Serializable {
 					.find(testInstanceId, studentIdentifier);
 			
 			if (studentTest == null) {
-				throw new Exception("No sé qué poner");
+				throw new Exception("Ocurrió un error al acceder al test");
 			}
 			return TEST_DEMO_INIT_URI + FACES_REDIRECT_TRUE + NAVIGATION_ID
 					+ URLEncoder.encode(AESUtil.encrypt(
@@ -70,10 +70,10 @@ public class HomeBean implements Serializable {
 		} catch (Exception e) {
 			
 			StackTraceElement element = e.getStackTrace()[0];
-			logger.error("Exception in Class: {}, Method: {}, Type: {}, Message: {}, Cause: {}",
-					element.getClassName(), element.getMethodName(), 
-					e.getClass().getName(), e.getMessage(), 
-					e.getCause() != null ? e.getCause() : "Unknown");
+			
+			logger.error("Exception in Class: {}, Method: {}, Type: {}, Message: {}",
+					element.getClassName(), element.getMethodName(),
+					e.getClass().getName(), e.getMessage());
 			
 		}
     	

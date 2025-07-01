@@ -1,25 +1,32 @@
 package util;
 
 import java.io.ByteArrayInputStream;
+import java.text.MessageFormat;
 
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import exception.DownloadFileException;
+import exception.ValidationException;
+
 public final class FileDownloadUtil {
 	
-	private FileDownloadUtil() {
-        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
-    }
+	private static final Logger logger = LogManager.getLogger(FileDownloadUtil.class);
+	
 	
 	public static void downloadFile(String fileName, byte[] fileData) throws Exception {
 		
-		_nullityCheck(fileName, fileData);
+		_checkNullability(fileName, fileData);
 
 	    FacesContext facesContext = FacesContext.getCurrentInstance();
 
 	    if (facesContext == null || facesContext.getExternalContext() == null) {
-	      throw new Exception("FacesContext is not available.");
+	    	throw new Exception("FacesContext is not available.");
 	    }
 
 	    HttpServletResponse response = _getResponse(facesContext, fileName);
@@ -39,8 +46,14 @@ public final class FileDownloadUtil {
 
 	    } catch (Exception e) {
 	    	
-	    	throw new Exception("Failed to download file '" + fileName + "': " + e.getMessage(), e);
-	      
+	    	StackTraceElement element = e.getStackTrace()[0];
+			
+			logger.error("Exception in Class: {}, Method: {}, Type: {}, Message: {}",
+					element.getClassName(), element.getMethodName(), 
+					e.getClass().getName(), e.getMessage());
+			
+			throw new DownloadFileException(e);
+			
 	    } finally {
 	    	
 	    	facesContext.responseComplete();
@@ -50,15 +63,20 @@ public final class FileDownloadUtil {
 	    
 	}
 	
-	private static void _nullityCheck(String fileName, byte[] fileData) throws Exception {
+	private static void _checkNullability(String fileName,
+			byte[] fileData) throws Exception {
 
-	  if (fileName == null) {
-		  throw new Exception("File name cannot be null.");
-	  }
-
-	  if (fileData == null) {
-		  throw new Exception("File data cannot be null.");
-	  }
+		if (StringUtils.isBlank(fileName)) {
+			throw new ValidationException(MessageFormat.format(
+					ResUtil.get("label_entity_xxx_must_not_be_null"),
+					ResUtil.get("label_name")));
+		}
+		
+		if (fileData == null) {
+			throw new ValidationException(MessageFormat.format(
+					ResUtil.get("label_entity_xxx_must_not_be_null"),
+					ResUtil.get("label_data")));
+		}
 
 	}
 
