@@ -7,11 +7,11 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 	
 	
-	<div class="modal fade" id="modalTestChangeToActive" tabindex="-1" aria-hidden="true">
+	<div class="modal fade" id="modalTestChangeToDraft" tabindex="-1" aria-hidden="true">
 		<div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">#{msg.label_change_to_active}</h5>
+                    <h5 class="modal-title">#{msg.label_change_to_draft}</h5>
                     <button type="button" class="btn-close"
                     	data-bs-dismiss="modal" aria-label="#{msg.label_close}" />
                 </div>
@@ -22,7 +22,7 @@
 					</div>
 					
 					<strong class="mb-2">
-						#{msg.label_change_to_active_confirmation}
+						#{msg.label_change_to_draft_confirmation}
 					</strong>
 				</div>
                 
@@ -31,9 +31,9 @@
                 		#{msg.label_cancel}
                		</button>
                 		
-				    <a4j:commandButton value="#{msg.label_change_to_active}"
-				    	actionListener="#{backingBeanRef['changeToActive']()}"
-				    	oncomplete="closeModal('modalTestChangeToActive');"
+				    <a4j:commandButton value="#{msg.label_change_to_draft}"
+				    	actionListener="#{backingBeanRef['changeToDraft']()}"
+				    	oncomplete="closeModal('modalTestChangeToDraft');"
 				    	styleClass="btn btn-primary"
 				    	render="TeViFrId, alertContainer" />
 				</div>

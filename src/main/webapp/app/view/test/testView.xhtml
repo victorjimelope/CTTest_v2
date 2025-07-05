@@ -41,13 +41,23 @@
 			        </ui:fragment>
 			        
 			        <ui:fragment rendered="#{backingBeanRef.currentObject.active}">
+			        	<li>
+			            	<a4j:commandLink id="TeChDfId"
+			            		oncomplete="openModal('modalTestChangeToDraft');"
+			            		styleClass="dropdown-item d-flex align-items-center gap-2"
+			            		render="MoChDfId">
+							    <i class="fa-solid fa-pen-ruler" />
+							    #{msg.label_change_to_draft}
+							</a4j:commandLink>
+			            </li>
+			        
 			            <li>
 			            	<a4j:commandLink id="TeChBlId"
 			            		oncomplete="openModal('modalTestChangeToBlocked');"
 			            		styleClass="dropdown-item d-flex align-items-center gap-2"
 			            		render="MoChBlId">
 							    <i class="fa-solid fa-ban" />
-							    #{msg.label_change_to_blocked}
+							    #{msg.label_change_to_locked}
 							</a4j:commandLink>
 			            </li>
 			        </ui:fragment>

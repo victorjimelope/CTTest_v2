@@ -22,6 +22,7 @@ import org.springframework.stereotype.Repository;
 
 import dao.TestDao;
 import model.Test;
+import model.enums.StudentTestStatus;
 import model.enums.TestStatus;
 import model.enums.TestType;
 import model.enums.noper.GenericSortType;
@@ -148,12 +149,17 @@ public class TestDaoImpl extends GenericHibernateDaoImpl<Test, Exception>
 		try {
 			
 			String mainQuery = _UPDATE + super.getEntityClass().getName()
-					+ _SET + "status" + _EQUALS + newStatus + ", "
-					+ "modDate" + _EQUALS + LocalDateTime.now() + ", "
-					+ "modUser" + _EQUALS + loggedUserId
-					+ _WHERE + "id" + _EQUALS + testId; 
+					+ _SET + "status = :newStatus, "
+					+ "modDate = :modDate, "
+					+ "modUser = :modUser"
+					+ _WHERE + "id = :id"; 
 			
-			getCurrentSession().createQuery(mainQuery).executeUpdate();
+			getCurrentSession().createQuery(mainQuery)
+					.setParameter("newStatus", newStatus)
+					.setParameter("modDate", LocalDateTime.now())
+					.setParameter("modUser", loggedUserId)
+					.setParameter("id", testId)
+					.executeUpdate();
 			
 		} catch (Exception e) {
 			
@@ -169,7 +175,7 @@ public class TestDaoImpl extends GenericHibernateDaoImpl<Test, Exception>
 					ResUtil.get("label_error_updating_xxx_with_params_yyy"),
 					super.getEntityClass().getSimpleName(),
 					"testId: " + (testId != null ? testId.toString() : "null")
-					+ "newStatus: " + (newStatus != null ? newStatus.getTitle() : "null")), e);
+					+ ", newStatus: " + (newStatus != null ? newStatus.getTitle() : "null")), e);
 			
 		}
 		

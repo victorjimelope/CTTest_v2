@@ -143,7 +143,7 @@ public class TestBLImpl extends GenericHibernateBLImpl<Test, Exception>
 	@Override
 	public void changeStatus(Integer testId, TestStatus newStatus,
 			Integer loggedUserId) throws Exception {
-		
+		dao.changeStatus(testId, newStatus, loggedUserId);
 	}
 	
 	@Override

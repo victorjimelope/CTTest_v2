@@ -38,6 +38,7 @@ import model.User;
 import model.enums.AnswersLayoutType;
 import model.enums.MimeType;
 import model.enums.TestInstanceStatus;
+import model.enums.TestStatus;
 import model.noper.GenericPagination;
 import model.noper.StringPair;
 import util.ResUtil;
@@ -592,6 +593,44 @@ public class TestFormBean extends BaseManagedBean implements Serializable {
 	
 	public String getTestsTabId() {
 		return TESTS_TAB_ID;
+	}
+	
+	public void changeToActive() {
+		_changeStatus(TestStatus.ACTIVE);
+	}
+	
+	public void changeToDraft() {
+		_changeStatus(TestStatus.DRAFT);
+	}
+	
+	public void changeToLocked() {
+		_changeStatus(TestStatus.LOCKED);
+	}
+	
+	private void _changeStatus(TestStatus newStatus) {
+		
+		try {
+			
+			serviceTestBL.changeStatus(currentObject.getId(),
+					newStatus, super.getLoggedUserId());
+			
+			currentObject.setStatus(newStatus);
+			
+		} catch (Exception e) {
+			
+			StackTraceElement element = e.getStackTrace()[0];
+			
+			logger.error("Exception in Class: {}, Method: {}, Type: {}, Message: {}",
+					element.getClassName(), element.getMethodName(),
+					e.getClass().getName(), e.getMessage());
+			
+			FacesContext.getCurrentInstance().addMessage(null, 
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, 
+							FacesMessage.SEVERITY_ERROR.toString(),
+							e.getMessage()));
+			
+		}
+		
 	}
 	
 }

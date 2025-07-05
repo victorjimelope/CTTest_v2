@@ -6,15 +6,17 @@
 	xmlns:a4j="http://richfaces.org/a4j">
 	
 	
-	<div class="row">
-		<div class="col">
-			<a4j:commandLink id="TeNwInId"
-				value="Asignar"
-	            oncomplete="openModal('modalNewTestInstance');"
-	            styleClass="btn btn-primary"
-	            render="MoNwInId" />
+	<ui:fragment rendered="#{backingBeanRef.currentObject.active}">
+		<div class="row">
+			<div class="col">
+				<a4j:commandLink id="TeNwInId"
+					value="Asignar"
+		            oncomplete="openModal('modalNewTestInstance');"
+		            styleClass="btn btn-primary"
+		            render="MoNwInId" />
+			</div>
 		</div>
-	</div>
+	</ui:fragment>
 	
 	<ui:fragment rendered="#{empty backingBeanRef.testInstancePagination.objectList}">
 		#{msg.label_no_results_found}

@@ -11,7 +11,7 @@
 		<div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">#{msg.label_change_to_active}</h5>
+                    <h5 class="modal-title">#{msg.label_change_to_locked}</h5>
                     <button type="button" class="btn-close"
                     	data-bs-dismiss="modal" aria-label="#{msg.label_close}" />
                 </div>
@@ -22,12 +22,8 @@
 					</div>
 					
 					<strong class="mb-2">
-						#{msg.label_change_to_active_confirmation}
+						#{msg.label_change_to_locked_confirmation}
 					</strong>
-					
-					<span>
-						#{msg.label_test_cannot_return_to_draft_status}
-					</span>
 				</div>
                 
                 <div class="modal-footer">
@@ -35,11 +31,11 @@
                 		#{msg.label_cancel}
                		</button>
                 		
-				    <a4j:commandButton value="#{msg.label_change_to_active}"
-				    	
+				    <a4j:commandButton value="#{msg.label_change_to_locked}"
+				    	actionListener="#{backingBeanRef['changeToLocked']()}"
 				    	oncomplete="closeModal('modalTestChangeToBlocked');"
 				    	styleClass="btn btn-danger"
-				    	render="TeSeLiId, alertContainer" />
+				    	render="TeViFrId, alertContainer" />
 				</div>
             </div>
         </div>
