@@ -82,6 +82,7 @@ public class StudentTestFormBean implements Serializable {
 		    		 _loadStudentTest(id);
 		    		 _checkIsTestInstanceClosed(id);
 		    		 _loadTest();
+		    		 _startTest();
 		    		 loadQuestion(0);
 		    		 
 	 	        } catch (Exception e) {
@@ -273,7 +274,7 @@ public class StudentTestFormBean implements Serializable {
 		
 	}
 	
-	public void startTest() {
+	private void _startTest() {
 		
 		if (studentTest.isInProgress() || studentTest.isClosed()) {
 			return;

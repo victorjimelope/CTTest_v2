@@ -274,8 +274,6 @@ public class TestInstanceFormBean extends BaseManagedBean implements Serializabl
         		ResUtil.get("label_center"),
         		ResUtil.get("label_birth_date"),
         		ResUtil.get("label_execution_date"),
-        		ResUtil.get("label_phase"),
-        		ResUtil.get("label_school_year"),
         		ResUtil.get("label_gender"),
 				ResUtil.get("label_comment")};
     	
