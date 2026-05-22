@@ -1,12 +1,8 @@
 package com.cttest.service.impl;
 
 import com.cttest.model.entity.TestInstance;
-import com.cttest.exception.ResourceNotFoundException;
 import com.cttest.repository.TestInstanceRepository;
 import com.cttest.service.TestInstanceService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,28 +11,10 @@ import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Service
-@RequiredArgsConstructor
-public class TestInstanceServiceImpl implements TestInstanceService {
+public class TestInstanceServiceImpl extends BaseServiceImpl<TestInstance, Integer, TestInstanceRepository> implements TestInstanceService {
 
-    private final TestInstanceRepository testInstanceRepository;
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<TestInstance> findAll() {
-        return testInstanceRepository.findAll();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Page<TestInstance> findAll(Pageable pageable) {
-        return testInstanceRepository.findAll(pageable);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public TestInstance findById(Integer id) {
-        return testInstanceRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("TestInstance not found with id: " + id));
+    public TestInstanceServiceImpl(TestInstanceRepository repository) {
+        super(repository, "TestInstance");
     }
 
     @Override
@@ -45,37 +23,25 @@ public class TestInstanceServiceImpl implements TestInstanceService {
         if (testInstance.getPin() == null) {
             testInstance.setPin(generatePin());
         }
-        return testInstanceRepository.save(testInstance);
-    }
-
-    @Override
-    @Transactional
-    public TestInstance update(TestInstance testInstance) {
-        return testInstanceRepository.save(testInstance);
-    }
-
-    @Override
-    @Transactional
-    public void deleteById(Integer id) {
-        testInstanceRepository.deleteById(id);
+        return repository.save(testInstance);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<TestInstance> findByTestId(Integer testId) {
-        return testInstanceRepository.findByTestId(testId);
+        return repository.findByTestId(testId);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Optional<TestInstance> findByPin(Integer pin) {
-        return testInstanceRepository.findByPin(pin);
+        return repository.findByPin(pin);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Optional<Integer> getIdByPin(Integer pin) {
-        return testInstanceRepository.getIdByPin(pin);
+        return repository.getIdByPin(pin);
     }
 
     @Override
@@ -84,7 +50,7 @@ public class TestInstanceServiceImpl implements TestInstanceService {
         int pin;
         do {
             pin = 100000 + ThreadLocalRandom.current().nextInt(900000);
-        } while (testInstanceRepository.findByPin(pin).isPresent());
+        } while (repository.findByPin(pin).isPresent());
         return pin;
     }
 

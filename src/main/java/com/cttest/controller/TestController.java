@@ -2,31 +2,21 @@ package com.cttest.controller;
 
 import com.cttest.model.entity.Test;
 import com.cttest.service.TestService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import java.net.URI;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.security.access.prepost.PreAuthorize;
-import jakarta.validation.Valid;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/tests")
-@RequiredArgsConstructor
-public class TestController {
+public class TestController extends BaseController<Test, TestService> {
 
-    private final TestService testService;
+    public TestController(TestService service) {
+        super(service);
+    }
 
     @GetMapping
     public ResponseEntity<?> getAll(
@@ -34,43 +24,18 @@ public class TestController {
             @RequestParam(required = false) String search,
             Pageable pageable) {
         if (centerId != null) {
-            return ResponseEntity.ok(testService.findByCenterId(centerId));
+            return ResponseEntity.ok(service.findByCenterId(centerId));
         }
-        if (search != null) {
-            return ResponseEntity.ok(testService.search(search, pageable));
-        }
-        return ResponseEntity.ok(testService.findAll(pageable));
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Test> getById(@PathVariable Integer id) {
-        return ResponseEntity.ok(testService.findById(id));
+        return listAll(search, pageable);
     }
 
     @GetMapping("/{id}/with-questions")
     public ResponseEntity<Test> getWithQuestions(@PathVariable Integer id) {
-        return ResponseEntity.ok(testService.findWithQuestionsById(id));
+        return ResponseEntity.ok(service.findWithQuestionsById(id));
     }
 
-    @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Test> create(@Valid @RequestBody Test test) {
-        Test saved = testService.save(test);
-        return ResponseEntity.created(URI.create("/api/tests/" + saved.getId())).body(saved);
+    @Override
+    protected String getPathSegment() {
+        return "tests";
     }
-
-    @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Test> update(@PathVariable Integer id, @Valid @RequestBody Test test) {
-        test.setId(id);
-        return ResponseEntity.ok(testService.update(test));
-    }
-
-    @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) {
-        testService.deleteById(id);
-        return ResponseEntity.noContent().build();
-    }
-
 }
