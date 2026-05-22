@@ -8,6 +8,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
+import jakarta.persistence.Version;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -50,6 +51,9 @@ public class StudentTest extends BaseEntity implements Serializable {
 
     @Column(name = "comment")
     private String comment;
+
+    @Version
+    private Long version;
 
     public boolean isAssigned() {
         return status != null && status.equals(StudentTestStatus.ASSIGNED);

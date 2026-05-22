@@ -17,6 +17,7 @@ import com.cttest.service.TestService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -98,6 +99,7 @@ public class PublicController {
     }
 
     @PostMapping("/student-tests/{id}/answer")
+    @Transactional
     public ResponseEntity<Void> saveAnswer(@PathVariable Integer id, @Valid @RequestBody AnswerRequest request) {
         StudentTest studentTest = studentTestService.findById(id);
         if (studentTest.isClosed()) {
@@ -116,6 +118,7 @@ public class PublicController {
     }
 
     @PostMapping("/student-tests/{id}/finish")
+    @Transactional
     public ResponseEntity<Map<String, Object>> finishTest(@PathVariable Integer id) {
         StudentTest studentTest = studentTestService.findById(id);
         if (studentTest.isClosed()) {
