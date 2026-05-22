@@ -1,12 +1,12 @@
 package com.cttest.controller;
 
-import com.cttest.model.entity.Question;
+import com.cttest.model.dto.AnswerRequest;
+import com.cttest.model.dto.PinRequest;
+import com.cttest.model.dto.ScoreResult;
 import com.cttest.model.entity.StudentAnswer;
 import com.cttest.model.entity.StudentTest;
 import com.cttest.model.entity.Test;
 import com.cttest.model.entity.TestInstance;
-import com.cttest.model.dto.AnswerRequest;
-import com.cttest.model.dto.PinRequest;
 import com.cttest.model.enums.StudentTestStatus;
 import com.cttest.service.QuestionService;
 import com.cttest.service.StudentAnswerService;
@@ -23,11 +23,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -87,22 +84,12 @@ public class PublicController {
         Test test = testService.findWithQuestionsById(
                 testInstanceService.findById(studentTest.getTestInstanceId()).getTestId());
         Map<Integer, Integer> answers = studentAnswerService.findAnswersMapByStudentTestId(id);
-
-        int totalQuestions = test.getQuestions().size();
-        int correctCount = 0;
-        for (Question q : test.getQuestions()) {
-            Integer selectedAnswerId = answers.get(q.getId());
-            if (selectedAnswerId != null) {
-                boolean isCorrect = q.getAnswers().stream()
-                        .anyMatch(a -> a.getId().equals(selectedAnswerId) && a.isCorrect());
-                if (isCorrect) correctCount++;
-            }
-        }
+        ScoreResult scoreResult = studentTestService.calculateScore(test, answers);
 
         Map<String, Object> result = new HashMap<>();
         result.put("score", studentTest.getScore());
-        result.put("correctCount", correctCount);
-        result.put("totalQuestions", totalQuestions);
+        result.put("correctCount", scoreResult.correctCount());
+        result.put("totalQuestions", scoreResult.totalQuestions());
         result.put("studentTest", studentTest);
         return ResponseEntity.ok(result);
     }
@@ -139,31 +126,17 @@ public class PublicController {
         TestInstance instance = testInstanceService.findById(studentTest.getTestInstanceId());
         Test test = testService.findWithQuestionsById(instance.getTestId());
         Map<Integer, Integer> answers = studentAnswerService.findAnswersMapByStudentTestId(id);
-
-        int totalQuestions = test.getQuestions().size();
-        int correctCount = 0;
-        for (Question q : test.getQuestions()) {
-            Integer selectedAnswerId = answers.get(q.getId());
-            if (selectedAnswerId != null) {
-                boolean isCorrect = q.getAnswers().stream()
-                        .anyMatch(a -> a.getId().equals(selectedAnswerId) && a.isCorrect());
-                if (isCorrect) correctCount++;
-            }
-        }
-
-        BigDecimal score = totalQuestions > 0
-                ? BigDecimal.valueOf(correctCount * 100L / totalQuestions)
-                : BigDecimal.ZERO;
+        ScoreResult scoreResult = studentTestService.calculateScore(test, answers);
 
         studentTest.setStatus(StudentTestStatus.FINISHED);
         studentTest.setFinishDate(LocalDateTime.now());
-        studentTest.setScore(score);
+        studentTest.setScore(scoreResult.score());
         studentTestService.update(studentTest);
 
         Map<String, Object> result = new HashMap<>();
-        result.put("score", score);
-        result.put("correctCount", correctCount);
-        result.put("totalQuestions", totalQuestions);
+        result.put("score", scoreResult.score());
+        result.put("correctCount", scoreResult.correctCount());
+        result.put("totalQuestions", scoreResult.totalQuestions());
         result.put("studentTest", studentTest);
         return ResponseEntity.ok(result);
     }

@@ -1,5 +1,6 @@
 package com.cttest.service;
 
+import com.cttest.model.dto.ScoreResult;
 import com.cttest.model.entity.StudentTest;
 
 import java.util.List;
@@ -13,4 +14,5 @@ public interface StudentTestService {
     List<StudentTest> findByTestInstanceId(Integer testInstanceId);
     Optional<StudentTest> findByTestInstanceAndStudent(Integer testInstanceId, Integer studentId);
     List<StudentTest> findByStudentId(Integer studentId);
+    ScoreResult calculateScore(com.cttest.model.entity.Test test, java.util.Map<Integer, Integer> answers);
 }
