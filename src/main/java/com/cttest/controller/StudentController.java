@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import java.net.URI;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,7 +45,8 @@ public class StudentController {
 
     @PostMapping
     public ResponseEntity<Student> create(@RequestBody Student student) {
-        return ResponseEntity.ok(studentService.save(student));
+        Student saved = studentService.save(student);
+        return ResponseEntity.created(URI.create("/api/students/" + saved.getId())).body(saved);
     }
 
     @PutMapping("/{id}")

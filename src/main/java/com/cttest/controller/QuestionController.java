@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
 import java.util.Map;
 
 @RestController
@@ -39,7 +40,8 @@ public class QuestionController {
         Test test = testService.findById(testId);
         question.setTest(test);
         question.getAnswers().forEach(a -> a.setQuestion(question));
-        return ResponseEntity.ok(questionService.save(question));
+        Question saved = questionService.save(question);
+        return ResponseEntity.created(URI.create("/api/questions/" + saved.getId())).body(saved);
     }
 
     @PutMapping("/questions/{id}")

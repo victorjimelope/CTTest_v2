@@ -5,6 +5,7 @@ import com.cttest.service.StudentTestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import java.net.URI;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -37,7 +38,8 @@ public class StudentTestController {
 
     @PostMapping
     public ResponseEntity<StudentTest> create(@RequestBody StudentTest studentTest) {
-        return ResponseEntity.ok(studentTestService.save(studentTest));
+        StudentTest saved = studentTestService.save(studentTest);
+        return ResponseEntity.created(URI.create("/api/student-tests/" + saved.getId())).body(saved);
     }
 
     @PutMapping("/{id}")

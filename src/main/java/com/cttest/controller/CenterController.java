@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import java.net.URI;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,7 +41,8 @@ public class CenterController {
 
     @PostMapping
     public ResponseEntity<Center> create(@RequestBody Center center) {
-        return ResponseEntity.ok(centerService.save(center));
+        Center saved = centerService.save(center);
+        return ResponseEntity.created(URI.create("/api/centers/" + saved.getId())).body(saved);
     }
 
     @PutMapping("/{id}")

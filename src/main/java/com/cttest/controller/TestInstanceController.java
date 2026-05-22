@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import java.net.URI;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,7 +44,8 @@ public class TestInstanceController {
         if (testInstance.getPin() == null) {
             testInstance.setPin(testInstanceService.generatePin());
         }
-        return ResponseEntity.ok(testInstanceService.save(testInstance));
+        TestInstance saved = testInstanceService.save(testInstance);
+        return ResponseEntity.created(URI.create("/api/test-instances/" + saved.getId())).body(saved);
     }
 
     @PutMapping("/{id}")
