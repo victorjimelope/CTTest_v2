@@ -1,0 +1,40 @@
+server:
+  port: ${SERVER_PORT:8081}
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: ${MAX_FILE_SIZE:10MB}
+      max-request-size: ${MAX_REQUEST_SIZE:10MB}
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:8033/demo}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:msandbox}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 250
+      minimum-idle: 10
+
+  jpa:
+    hibernate:
+      ddl-auto: ${JPA_DDL_AUTO:validate}
+    show-sql: ${JPA_SHOW_SQL:false}
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+        id:
+          new_generator_mappings: false
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:4a6f536e696c6c6579436f64655365637265744b6579466f724a57545369676e696e67}
+    expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+
+logging:
+  level:
+    com.cttest: ${LOG_LEVEL:INFO}

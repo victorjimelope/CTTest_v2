@@ -1,1 +1,16 @@
-/target/
+target/
+*.class
+*.jar
+*.war
+*.log
+.idea/
+*.iml
+.settings/
+.classpath
+.project
+.metadata/
+*.swp
+*.swo
+*~
+.DS_Store
+docker-data/

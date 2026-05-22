@@ -1,0 +1,66 @@
+package com.cttest.controller;
+
+import com.cttest.model.entity.Answer;
+import com.cttest.model.entity.Question;
+import com.cttest.model.entity.Test;
+import com.cttest.service.QuestionService;
+import com.cttest.service.TestService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
+
+@RestController
+@RequestMapping("/api")
+@RequiredArgsConstructor
+public class QuestionController {
+
+    private final QuestionService questionService;
+    private final TestService testService;
+
+    @GetMapping("/questions/{id}")
+    public ResponseEntity<Question> getById(@PathVariable Integer id) {
+        return ResponseEntity.ok(questionService.findById(id));
+    }
+
+    @PostMapping("/tests/{testId}/questions")
+    public ResponseEntity<?> create(@PathVariable Integer testId, @RequestBody Question question) {
+        if (question.getAnswers() == null || question.getAnswers().stream().anyMatch(a -> a.getImage() == null)) {
+            return ResponseEntity.badRequest().body(Map.of("error", "All answers must have an image"));
+        }
+        Test test = testService.findById(testId);
+        question.setTest(test);
+        question.getAnswers().forEach(a -> a.setQuestion(question));
+        return ResponseEntity.ok(questionService.save(question));
+    }
+
+    @PutMapping("/questions/{id}")
+    public ResponseEntity<?> update(@PathVariable Integer id, @RequestBody Question question) {
+        if (question.getAnswers() != null && question.getAnswers().stream().anyMatch(a -> a.getImage() == null)) {
+            return ResponseEntity.badRequest().body(Map.of("error", "All answers must have an image"));
+        }
+        question.setId(id);
+        question.getAnswers().forEach(a -> a.setQuestion(question));
+        return ResponseEntity.ok(questionService.update(question));
+    }
+
+    @DeleteMapping("/questions/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Integer id) {
+        questionService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/questions/{id}/move")
+    public ResponseEntity<Void> move(@PathVariable Integer id, @RequestBody Map<String, String> body) {
+        questionService.move(id, body.getOrDefault("direction", "up"));
+        return ResponseEntity.noContent().build();
+    }
+}
