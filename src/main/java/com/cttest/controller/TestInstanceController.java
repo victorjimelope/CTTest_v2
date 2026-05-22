@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 import jakarta.validation.Valid;
 
 @RestController
@@ -41,6 +42,7 @@ public class TestInstanceController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<TestInstance> create(@Valid @RequestBody TestInstance testInstance) {
         if (testInstance.getPin() == null) {
             testInstance.setPin(testInstanceService.generatePin());
@@ -50,12 +52,14 @@ public class TestInstanceController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<TestInstance> update(@PathVariable Integer id, @Valid @RequestBody TestInstance testInstance) {
         testInstance.setId(id);
         return ResponseEntity.ok(testInstanceService.update(testInstance));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
         testInstanceService.deleteById(id);
         return ResponseEntity.noContent().build();

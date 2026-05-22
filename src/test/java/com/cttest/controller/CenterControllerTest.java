@@ -65,7 +65,7 @@ class CenterControllerTest {
     }
 
     @Test
-    @WithMockUser
+    @WithMockUser(roles = "ADMIN")
     void create_ShouldReturnCreatedCenter() throws Exception {
         Center center = new Center();
         center.setName("New Center");

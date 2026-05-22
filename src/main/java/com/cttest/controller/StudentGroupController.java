@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 import jakarta.validation.Valid;
 
 @RestController
@@ -45,18 +46,21 @@ public class StudentGroupController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<StudentGroup> create(@Valid @RequestBody StudentGroup studentGroup) {
         StudentGroup saved = studentGroupService.save(studentGroup);
         return ResponseEntity.created(URI.create("/api/student-groups/" + saved.getId())).body(saved);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<StudentGroup> update(@PathVariable Integer id, @Valid @RequestBody StudentGroup studentGroup) {
         studentGroup.setId(id);
         return ResponseEntity.ok(studentGroupService.update(studentGroup));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
         studentGroupService.deleteById(id);
         return ResponseEntity.noContent().build();

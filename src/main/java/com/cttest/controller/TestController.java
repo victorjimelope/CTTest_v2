@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 import jakarta.validation.Valid;
 
 import java.util.List;
@@ -52,18 +53,21 @@ public class TestController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Test> create(@Valid @RequestBody Test test) {
         Test saved = testService.save(test);
         return ResponseEntity.created(URI.create("/api/tests/" + saved.getId())).body(saved);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Test> update(@PathVariable Integer id, @Valid @RequestBody Test test) {
         test.setId(id);
         return ResponseEntity.ok(testService.update(test));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
         testService.deleteById(id);
         return ResponseEntity.noContent().build();

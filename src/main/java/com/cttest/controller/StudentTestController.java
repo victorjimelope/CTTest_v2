@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 import jakarta.validation.Valid;
 
 import java.util.List;
@@ -38,12 +39,14 @@ public class StudentTestController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<StudentTest> create(@Valid @RequestBody StudentTest studentTest) {
         StudentTest saved = studentTestService.save(studentTest);
         return ResponseEntity.created(URI.create("/api/student-tests/" + saved.getId())).body(saved);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<StudentTest> update(@PathVariable Integer id, @Valid @RequestBody StudentTest studentTest) {
         studentTest.setId(id);
         return ResponseEntity.ok(studentTestService.update(studentTest));

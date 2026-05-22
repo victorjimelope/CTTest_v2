@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 import jakarta.validation.Valid;
 
 @RestController
@@ -41,18 +42,21 @@ public class CenterController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Center> create(@Valid @RequestBody Center center) {
         Center saved = centerService.save(center);
         return ResponseEntity.created(URI.create("/api/centers/" + saved.getId())).body(saved);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Center> update(@PathVariable Integer id, @Valid @RequestBody Center center) {
         center.setId(id);
         return ResponseEntity.ok(centerService.update(center));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
         centerService.deleteById(id);
         return ResponseEntity.noContent().build();

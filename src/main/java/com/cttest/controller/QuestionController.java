@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.util.Map;
+import org.springframework.security.access.prepost.PreAuthorize;
 import jakarta.validation.Valid;
 
 @RestController
@@ -34,6 +35,7 @@ public class QuestionController {
     }
 
     @PostMapping("/tests/{testId}/questions")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> create(@PathVariable Integer testId, @Valid @RequestBody Question question) {
         if (question.getAnswers() == null || question.getAnswers().stream().anyMatch(a -> a.getImage() == null)) {
             return ResponseEntity.badRequest().body(Map.of("error", "All answers must have an image"));
@@ -46,6 +48,7 @@ public class QuestionController {
     }
 
     @PutMapping("/questions/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> update(@PathVariable Integer id, @Valid @RequestBody Question question) {
         if (question.getAnswers() != null && question.getAnswers().stream().anyMatch(a -> a.getImage() == null)) {
             return ResponseEntity.badRequest().body(Map.of("error", "All answers must have an image"));
@@ -56,12 +59,14 @@ public class QuestionController {
     }
 
     @DeleteMapping("/questions/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
         questionService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/questions/{id}/move")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> move(@PathVariable Integer id, @RequestBody Map<String, String> body) {
         questionService.move(id, body.getOrDefault("direction", "up"));
         return ResponseEntity.noContent().build();
