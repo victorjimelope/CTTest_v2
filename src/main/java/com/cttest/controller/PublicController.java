@@ -5,7 +5,6 @@ import com.cttest.model.dto.PinRequest;
 import com.cttest.model.dto.ScoreResult;
 import com.cttest.model.dto.TestDataDTO;
 import com.cttest.model.dto.TestDataMapper;
-import com.cttest.model.entity.StudentAnswer;
 import com.cttest.model.entity.StudentTest;
 import com.cttest.model.entity.Test;
 import com.cttest.model.entity.TestInstance;
@@ -111,11 +110,7 @@ public class PublicController {
             studentTestService.update(studentTest);
         }
 
-        StudentAnswer answer = new StudentAnswer();
-        answer.setStudentTestId(id);
-        answer.setQuestionId(request.questionId());
-        answer.setAnswerId(request.answerId());
-        studentAnswerService.save(answer);
+        studentAnswerService.saveOrUpdate(id, request.questionId(), request.answerId());
 
         return ResponseEntity.ok().build();
     }
