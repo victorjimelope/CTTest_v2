@@ -6,21 +6,17 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapKeyColumn;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Map;
 
 import static com.cttest.util.Constants.DATE_TIME_FORMAT;
 
@@ -30,7 +26,6 @@ import static com.cttest.util.Constants.DATE_TIME_FORMAT;
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@ToString(exclude = "studentAnswers")
 public class StudentTest extends BaseEntity implements Serializable {
 
     @Column(name = "test_instance_id")
@@ -55,18 +50,6 @@ public class StudentTest extends BaseEntity implements Serializable {
 
     @Column(name = "comment")
     private String comment;
-
-    @OneToMany(mappedBy = "studentTestId")
-    @MapKeyColumn(name = "question_id")
-    @Transient
-    private Map<Integer, StudentAnswer> studentAnswers;
-
-    public Integer getAnswerId(Integer questionId) {
-        if (studentAnswers != null && questionId != null && studentAnswers.containsKey(questionId)) {
-            return studentAnswers.get(questionId).getAnswerId();
-        }
-        return null;
-    }
 
     public boolean isAssigned() {
         return status != null && status.equals(StudentTestStatus.ASSIGNED);

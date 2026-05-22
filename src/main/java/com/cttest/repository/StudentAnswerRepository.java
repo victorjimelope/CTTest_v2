@@ -11,6 +11,4 @@ public interface StudentAnswerRepository extends JpaRepository<StudentAnswer, In
 
     List<StudentAnswer> findByStudentTestId(Integer studentTestId);
 
-    List<StudentAnswer> findByQuestionId(Integer questionId);
-
 }

@@ -42,12 +42,6 @@ public class StudentTestServiceImpl implements StudentTestService {
     }
 
     @Override
-    @Transactional
-    public void deleteById(Integer id) {
-        studentTestRepository.deleteById(id);
-    }
-
-    @Override
     @Transactional(readOnly = true)
     public List<StudentTest> findByTestInstanceId(Integer testInstanceId) {
         return studentTestRepository.findByTestInstanceId(testInstanceId);

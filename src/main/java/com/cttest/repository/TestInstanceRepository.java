@@ -15,8 +15,6 @@ public interface TestInstanceRepository extends JpaRepository<TestInstance, Inte
 
     List<TestInstance> findByTestId(Integer testId);
 
-    List<TestInstance> findByStudentGroupId(Integer studentGroupId);
-
     Optional<TestInstance> findByPin(Integer pin);
 
     @Query("SELECT ti.id FROM TestInstance ti WHERE ti.pin = :pin")

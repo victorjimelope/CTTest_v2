@@ -5,7 +5,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UserService {
     List<User> findAll();
@@ -15,6 +14,4 @@ public interface UserService {
     User save(User user);
     User update(User user);
     void deleteById(Integer id);
-    Optional<User> findByUsername(String username);
-    boolean existsByUsername(String username);
 }
