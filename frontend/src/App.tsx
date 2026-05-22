@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './auth/AuthContext'
+import ErrorBoundary from './components/ErrorBoundary'
 import PrivateRoute from './components/PrivateRoute'
 import Layout from './components/Layout'
 import LoginPage from './auth/LoginPage'
@@ -17,6 +18,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <ErrorBoundary>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/take-test" element={<PinEntry />} />
@@ -39,6 +41,7 @@ export default function App() {
             <Route path="/users" element={<Users />} />
           </Route>
         </Routes>
+        </ErrorBoundary>
       </AuthProvider>
     </BrowserRouter>
   )
