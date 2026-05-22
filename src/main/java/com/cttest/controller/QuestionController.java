@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.util.Map;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api")
@@ -33,7 +34,7 @@ public class QuestionController {
     }
 
     @PostMapping("/tests/{testId}/questions")
-    public ResponseEntity<?> create(@PathVariable Integer testId, @RequestBody Question question) {
+    public ResponseEntity<?> create(@PathVariable Integer testId, @Valid @RequestBody Question question) {
         if (question.getAnswers() == null || question.getAnswers().stream().anyMatch(a -> a.getImage() == null)) {
             return ResponseEntity.badRequest().body(Map.of("error", "All answers must have an image"));
         }
@@ -45,7 +46,7 @@ public class QuestionController {
     }
 
     @PutMapping("/questions/{id}")
-    public ResponseEntity<?> update(@PathVariable Integer id, @RequestBody Question question) {
+    public ResponseEntity<?> update(@PathVariable Integer id, @Valid @RequestBody Question question) {
         if (question.getAnswers() != null && question.getAnswers().stream().anyMatch(a -> a.getImage() == null)) {
             return ResponseEntity.badRequest().body(Map.of("error", "All answers must have an image"));
         }

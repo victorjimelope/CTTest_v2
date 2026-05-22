@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/students")
@@ -44,13 +45,13 @@ public class StudentController {
     }
 
     @PostMapping
-    public ResponseEntity<Student> create(@RequestBody Student student) {
+    public ResponseEntity<Student> create(@Valid @RequestBody Student student) {
         Student saved = studentService.save(student);
         return ResponseEntity.created(URI.create("/api/students/" + saved.getId())).body(saved);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Student> update(@PathVariable Integer id, @RequestBody Student student) {
+    public ResponseEntity<Student> update(@PathVariable Integer id, @Valid @RequestBody Student student) {
         student.setId(id);
         return ResponseEntity.ok(studentService.update(student));
     }

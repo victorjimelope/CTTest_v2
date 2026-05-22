@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/test-instances")
@@ -40,7 +41,7 @@ public class TestInstanceController {
     }
 
     @PostMapping
-    public ResponseEntity<TestInstance> create(@RequestBody TestInstance testInstance) {
+    public ResponseEntity<TestInstance> create(@Valid @RequestBody TestInstance testInstance) {
         if (testInstance.getPin() == null) {
             testInstance.setPin(testInstanceService.generatePin());
         }
@@ -49,7 +50,7 @@ public class TestInstanceController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TestInstance> update(@PathVariable Integer id, @RequestBody TestInstance testInstance) {
+    public ResponseEntity<TestInstance> update(@PathVariable Integer id, @Valid @RequestBody TestInstance testInstance) {
         testInstance.setId(id);
         return ResponseEntity.ok(testInstanceService.update(testInstance));
     }

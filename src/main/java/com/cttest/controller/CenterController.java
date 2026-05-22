@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/centers")
@@ -40,13 +41,13 @@ public class CenterController {
     }
 
     @PostMapping
-    public ResponseEntity<Center> create(@RequestBody Center center) {
+    public ResponseEntity<Center> create(@Valid @RequestBody Center center) {
         Center saved = centerService.save(center);
         return ResponseEntity.created(URI.create("/api/centers/" + saved.getId())).body(saved);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Center> update(@PathVariable Integer id, @RequestBody Center center) {
+    public ResponseEntity<Center> update(@PathVariable Integer id, @Valid @RequestBody Center center) {
         center.setId(id);
         return ResponseEntity.ok(centerService.update(center));
     }
