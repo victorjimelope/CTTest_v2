@@ -13,34 +13,41 @@ import TestInstances from './pages/TestInstances'
 import Students from './pages/Students'
 import StudentGroups from './pages/StudentGroups'
 import Users from './pages/Users'
+import { Suspense } from 'react'
+
+function Spinner() {
+  return <div className="text-center py-5"><div className="spinner-border" /></div>
+}
 
 export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
         <ErrorBoundary>
-        <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/take-test" element={<PinEntry />} />
-          <Route path="/take-test/:id" element={<TestTaking />} />
-          <Route path="/take-test/:id/result" element={<TestResult />} />
-          <Route
-            element={
-              <PrivateRoute>
-                <Layout />
-              </PrivateRoute>
-            }
-          >
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/centers" element={<Centers />} />
-            <Route path="/tests" element={<Tests />} />
-            <Route path="/tests/:id" element={<TestDetail />} />
-            <Route path="/test-instances" element={<TestInstances />} />
-            <Route path="/students" element={<Students />} />
-            <Route path="/student-groups" element={<StudentGroups />} />
-            <Route path="/users" element={<Users />} />
-          </Route>
-        </Routes>
+          <Suspense fallback={<Spinner />}>
+            <Routes>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/take-test" element={<PinEntry />} />
+              <Route path="/take-test/:id" element={<TestTaking />} />
+              <Route path="/take-test/:id/result" element={<TestResult />} />
+              <Route
+                element={
+                  <PrivateRoute>
+                    <Layout />
+                  </PrivateRoute>
+                }
+              >
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/centers" element={<Centers />} />
+                <Route path="/tests" element={<Tests />} />
+                <Route path="/tests/:id" element={<TestDetail />} />
+                <Route path="/test-instances" element={<TestInstances />} />
+                <Route path="/students" element={<Students />} />
+                <Route path="/student-groups" element={<StudentGroups />} />
+                <Route path="/users" element={<Users />} />
+              </Route>
+            </Routes>
+          </Suspense>
         </ErrorBoundary>
       </AuthProvider>
     </BrowserRouter>

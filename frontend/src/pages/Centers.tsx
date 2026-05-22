@@ -1,6 +1,7 @@
-import { useEffect, useState, FormEvent } from 'react'
+import { useEffect, useState, FormEvent, useCallback } from 'react'
 import api from '../api/axios'
 import Pagination from '../components/Pagination'
+import Modal from '../components/Modal'
 import type { Center, PageResponse } from '../types'
 
 export default function Centers() {
@@ -10,14 +11,23 @@ export default function Centers() {
   const [showModal, setShowModal] = useState(false)
   const [editing, setEditing] = useState<Center | null>(null)
   const [name, setName] = useState('')
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  const load = () => {
-    const params: any = { page, size: 20 }
+  const load = useCallback(() => {
+    const controller = new AbortController()
+    setLoading(true)
+    setError(null)
+    const params: Record<string, string | number> = { page, size: 20 }
     if (search) params.search = search
-    api.get<PageResponse<Center>>('/centers', { params }).then((r) => setPageData(r.data))
-  }
+    api.get<PageResponse<Center>>('/centers', { params, signal: controller.signal })
+      .then((r) => setPageData(r.data))
+      .catch((err) => { if (!controller.signal.aborted) setError(err.response?.data?.message ?? err.message) })
+      .finally(() => { if (!controller.signal.aborted) setLoading(false) })
+    return () => controller.abort()
+  }, [page, search])
 
-  useEffect(() => { load() }, [page, search])
+  useEffect(() => load(), [load])
 
   const openCreate = () => {
     setEditing(null)
@@ -33,24 +43,34 @@ export default function Centers() {
 
   const handleSave = async (e: FormEvent) => {
     e.preventDefault()
-    if (editing) {
-      await api.put(`/centers/${editing.id}`, { ...editing, name })
-    } else {
-      await api.post('/centers', { name })
+    try {
+      if (editing) {
+        await api.put(`/centers/${editing.id}`, { ...editing, name })
+      } else {
+        await api.post('/centers', { name })
+      }
+      setShowModal(false)
+      load()
+    } catch (err: any) {
+      setError(err.response?.data?.message ?? err.message)
     }
-    setShowModal(false)
-    load()
   }
 
   const handleDelete = async (id: number) => {
-    if (confirm('Delete this center?')) {
+    if (!confirm('Delete this center?')) return
+    try {
       await api.delete(`/centers/${id}`)
       load()
+    } catch (err: any) {
+      setError(err.response?.data?.message ?? err.message)
     }
   }
 
+  if (loading) return <div className="text-center py-5"><div className="spinner-border" /></div>
+
   return (
     <>
+      {error && <div className="alert alert-danger alert-dismissible" role="alert">{error}<button type="button" className="btn-close" onClick={() => setError(null)} /></div>}
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h3 className="mb-0">Centers</h3>
         <div className="d-flex gap-2">
@@ -76,12 +96,8 @@ export default function Centers() {
               <td>{c.name}</td>
               <td>{c.addDate ? new Date(c.addDate).toLocaleDateString() : '-'}</td>
               <td>
-                <button className="btn btn-sm btn-outline-primary me-1" onClick={() => openEdit(c)}>
-                  Edit
-                </button>
-                <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(c.id)}>
-                  Delete
-                </button>
+                <button className="btn btn-sm btn-outline-primary me-1" onClick={() => openEdit(c)}>Edit</button>
+                <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(c.id)}>Delete</button>
               </td>
             </tr>
           ))}
@@ -93,38 +109,20 @@ export default function Centers() {
         <Pagination page={pageData.number} totalPages={pageData.totalPages} onPageChange={setPage} />
       </div>
 
-      {showModal && (
-        <div className="modal d-block" tabIndex={-1} style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <form onSubmit={handleSave}>
-                <div className="modal-header">
-                  <h5 className="modal-title">{editing ? 'Edit' : 'New'} Center</h5>
-                  <button type="button" className="btn-close" onClick={() => setShowModal(false)} />
-                </div>
-                <div className="modal-body">
-                  <div className="mb-3">
-                    <label className="form-label">Name</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="modal-footer">
-                  <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>
-                    Cancel
-                  </button>
-                  <button type="submit" className="btn btn-primary">Save</button>
-                </div>
-              </form>
+      <Modal show={showModal} onClose={() => setShowModal(false)} title={`${editing ? 'Edit' : 'New'} Center`}>
+        <form onSubmit={handleSave}>
+          <div className="modal-body">
+            <div className="mb-3">
+              <label className="form-label">Name</label>
+              <input type="text" className="form-control" value={name} onChange={(e) => setName(e.target.value)} required />
             </div>
           </div>
-        </div>
-      )}
+          <div className="modal-footer">
+            <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Cancel</button>
+            <button type="submit" className="btn btn-primary">Save</button>
+          </div>
+        </form>
+      </Modal>
     </>
   )
 }
