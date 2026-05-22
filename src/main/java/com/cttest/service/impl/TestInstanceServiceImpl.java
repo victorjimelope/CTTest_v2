@@ -11,14 +11,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 @RequiredArgsConstructor
 public class TestInstanceServiceImpl implements TestInstanceService {
 
     private final TestInstanceRepository testInstanceRepository;
-    private final Random random = new Random();
 
     @Override
     @Transactional(readOnly = true)
@@ -80,7 +79,7 @@ public class TestInstanceServiceImpl implements TestInstanceService {
     public Integer generatePin() {
         int pin;
         do {
-            pin = 100000 + random.nextInt(900000);
+            pin = 100000 + ThreadLocalRandom.current().nextInt(900000);
         } while (testInstanceRepository.findByPin(pin).isPresent());
         return pin;
     }
