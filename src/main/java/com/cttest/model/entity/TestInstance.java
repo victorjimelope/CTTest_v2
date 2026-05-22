@@ -7,6 +7,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +17,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "test_instance")
+@Table(name = "test_instance", uniqueConstraints = @UniqueConstraint(columnNames = "pin"))
 @Getter
 @Setter
 @NoArgsConstructor
@@ -42,7 +43,7 @@ public class TestInstance extends BaseEntity implements Serializable {
     @Column(name = "assigned_date")
     private LocalDate assignedDate;
 
-    @Column(name = "pin")
+    @Column(name = "pin", unique = true)
     private Integer pin;
 
     public boolean isClosed() {
