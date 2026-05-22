@@ -6,16 +6,20 @@ import com.cttest.model.dto.RefreshTokenRequest;
 import com.cttest.security.CustomUserDetails;
 import com.cttest.security.JwtTokenProvider;
 import com.cttest.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -27,7 +31,7 @@ public class AuthController {
     private final UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request, HttpServletResponse response) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.username(), request.password()));
 
@@ -36,13 +40,20 @@ public class AuthController {
                 userDetails.getId(), userDetails.getUsername(), userDetails.isAdmin());
         String refreshToken = jwtTokenProvider.generateRefreshToken(userDetails.getId());
 
+        jakarta.servlet.http.Cookie jwtCookie = new jakarta.servlet.http.Cookie("jwt", token);
+        jwtCookie.setHttpOnly(true);
+        jwtCookie.setSecure(false);
+        jwtCookie.setPath("/");
+        jwtCookie.setMaxAge(24 * 60 * 60);
+        response.addCookie(jwtCookie);
+
         return ResponseEntity.ok(new LoginResponse(
                 token, "Bearer", userDetails.getId(),
                 userDetails.getUsername(), userDetails.isAdmin(), refreshToken));
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<LoginResponse> refresh(@Valid @RequestBody RefreshTokenRequest request) {
+    public ResponseEntity<LoginResponse> refresh(@Valid @RequestBody RefreshTokenRequest request, HttpServletResponse servletResponse) {
         if (!jwtTokenProvider.validateToken(request.refreshToken()) || !jwtTokenProvider.isRefreshToken(request.refreshToken())) {
             return ResponseEntity.badRequest().build();
         }
@@ -53,9 +64,40 @@ public class AuthController {
         String token = jwtTokenProvider.generateToken(user.getId(), user.getUsername(), user.isAdmin());
         String refreshToken = jwtTokenProvider.generateRefreshToken(user.getId());
 
+        jakarta.servlet.http.Cookie jwtCookie = new jakarta.servlet.http.Cookie("jwt", token);
+        jwtCookie.setHttpOnly(true);
+        jwtCookie.setSecure(false);
+        jwtCookie.setPath("/");
+        jwtCookie.setMaxAge(24 * 60 * 60);
+        servletResponse.addCookie(jwtCookie);
+
         return ResponseEntity.ok(new LoginResponse(
                 token, "Bearer", user.getId(),
                 user.getUsername(), user.isAdmin(), refreshToken));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletResponse response) {
+        jakarta.servlet.http.Cookie jwtCookie = new jakarta.servlet.http.Cookie("jwt", null);
+        jwtCookie.setHttpOnly(true);
+        jwtCookie.setPath("/");
+        jwtCookie.setMaxAge(0);
+        response.addCookie(jwtCookie);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<Map<String, Object>> me(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.ok(Map.of("authenticated", false));
+        }
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        return ResponseEntity.ok(Map.of(
+                "authenticated", true,
+                "userId", userDetails.getId(),
+                "username", userDetails.getUsername(),
+                "admin", userDetails.isAdmin()
+        ));
     }
 
 }

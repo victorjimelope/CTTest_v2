@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from 'react'
+import { createContext, useContext, useState, useEffect, type ReactNode } from 'react'
 import api from '../api/axios'
 import type { LoginResponse } from '../types'
 
@@ -8,26 +8,40 @@ interface AuthContextType {
   logout: () => void
   isAuthenticated: boolean
   isAdmin: boolean
+  loading: boolean
 }
 
 const AuthContext = createContext<AuthContextType | null>(null)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<LoginResponse | null>(() => {
-    const stored = localStorage.getItem('user')
-    return stored ? JSON.parse(stored) : null
-  })
+  const [user, setUser] = useState<LoginResponse | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    api.get('/auth/me')
+      .then((r) => {
+        if (r.data.authenticated) {
+          setUser({
+            token: '',
+            type: 'Bearer',
+            userId: r.data.userId,
+            username: r.data.username,
+            admin: r.data.admin,
+            refreshToken: '',
+          })
+        }
+      })
+      .catch(() => setUser(null))
+      .finally(() => setLoading(false))
+  }, [])
 
   const login = async (username: string, password: string) => {
     const { data } = await api.post<LoginResponse>('/auth/login', { username, password })
-    localStorage.setItem('token', data.token)
-    localStorage.setItem('user', JSON.stringify(data))
     setUser(data)
   }
 
-  const logout = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('user')
+  const logout = async () => {
+    await api.post('/auth/logout').catch(() => {})
     setUser(null)
   }
 
@@ -39,6 +53,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         logout,
         isAuthenticated: !!user,
         isAdmin: user?.admin ?? false,
+        loading,
       }}
     >
       {children}
