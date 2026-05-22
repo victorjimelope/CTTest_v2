@@ -1,6 +1,7 @@
 package com.cttest.service.impl;
 
 import com.cttest.model.entity.User;
+import com.cttest.exception.ResourceNotFoundException;
 import com.cttest.repository.UserRepository;
 import com.cttest.service.UserService;
 import jakarta.persistence.criteria.Predicate;
@@ -44,7 +45,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public User findById(Integer id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
     }
 
     @Override

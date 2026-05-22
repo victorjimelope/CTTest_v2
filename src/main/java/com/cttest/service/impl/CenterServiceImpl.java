@@ -1,6 +1,7 @@
 package com.cttest.service.impl;
 
 import com.cttest.model.entity.Center;
+import com.cttest.exception.ResourceNotFoundException;
 import com.cttest.repository.CenterRepository;
 import com.cttest.service.CenterService;
 import jakarta.persistence.criteria.Predicate;
@@ -43,7 +44,7 @@ public class CenterServiceImpl implements CenterService {
     @Transactional(readOnly = true)
     public Center findById(Integer id) {
         return centerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Center not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Center not found with id: " + id));
     }
 
     @Override

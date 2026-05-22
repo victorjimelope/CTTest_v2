@@ -1,6 +1,7 @@
 package com.cttest.service.impl;
 
 import com.cttest.model.entity.StudentTest;
+import com.cttest.exception.ResourceNotFoundException;
 import com.cttest.repository.StudentTestRepository;
 import com.cttest.service.StudentTestService;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class StudentTestServiceImpl implements StudentTestService {
     @Transactional(readOnly = true)
     public StudentTest findById(Integer id) {
         return studentTestRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("StudentTest not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("StudentTest not found with id: " + id));
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.cttest.service.impl;
 
 import com.cttest.model.entity.Test;
 import com.cttest.repository.QuestionRepository;
+import com.cttest.exception.ResourceNotFoundException;
 import com.cttest.repository.TestRepository;
 import com.cttest.service.TestService;
 import jakarta.persistence.criteria.Predicate;
@@ -46,7 +47,7 @@ public class TestServiceImpl implements TestService {
     @Transactional(readOnly = true)
     public Test findById(Integer id) {
         return testRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Test not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Test not found with id: " + id));
     }
 
     @Override

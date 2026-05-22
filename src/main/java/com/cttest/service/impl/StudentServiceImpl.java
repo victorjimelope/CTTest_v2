@@ -1,6 +1,7 @@
 package com.cttest.service.impl;
 
 import com.cttest.model.entity.Student;
+import com.cttest.exception.ResourceNotFoundException;
 import com.cttest.repository.StudentRepository;
 import com.cttest.service.StudentService;
 import jakarta.persistence.criteria.Predicate;
@@ -44,7 +45,7 @@ public class StudentServiceImpl implements StudentService {
     @Transactional(readOnly = true)
     public Student findById(Integer id) {
         return studentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Student not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found with id: " + id));
     }
 
     @Override

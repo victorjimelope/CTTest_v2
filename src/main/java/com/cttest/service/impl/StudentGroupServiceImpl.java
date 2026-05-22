@@ -1,6 +1,7 @@
 package com.cttest.service.impl;
 
 import com.cttest.model.entity.StudentGroup;
+import com.cttest.exception.ResourceNotFoundException;
 import com.cttest.repository.StudentGroupRepository;
 import com.cttest.service.StudentGroupService;
 import jakarta.persistence.criteria.Predicate;
@@ -43,7 +44,7 @@ public class StudentGroupServiceImpl implements StudentGroupService {
     @Transactional(readOnly = true)
     public StudentGroup findById(Integer id) {
         return studentGroupRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("StudentGroup not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("StudentGroup not found with id: " + id));
     }
 
     @Override
