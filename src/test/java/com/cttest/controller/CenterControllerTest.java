@@ -78,7 +78,7 @@ class CenterControllerTest {
         mockMvc.perform(post("/api/centers")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(center)))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name").value("New Center"));
     }
 

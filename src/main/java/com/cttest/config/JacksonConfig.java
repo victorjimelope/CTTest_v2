@@ -9,8 +9,6 @@ public class JacksonConfig {
 
     @Bean
     public Hibernate6Module hibernate6Module() {
-        Hibernate6Module module = new Hibernate6Module();
-        module.configure(Hibernate6Module.Feature.FORCE_LAZY_LOADING, true);
-        return module;
+        return new Hibernate6Module();
     }
 }
