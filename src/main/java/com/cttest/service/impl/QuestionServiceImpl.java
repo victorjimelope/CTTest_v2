@@ -27,12 +27,14 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     @Transactional
     public Question save(Question question) {
+        validateAnswersHaveImages(question);
         return questionRepository.save(question);
     }
 
     @Override
     @Transactional
     public Question update(Question question) {
+        validateAnswersHaveImages(question);
         return questionRepository.save(question);
     }
 
@@ -63,5 +65,11 @@ public class QuestionServiceImpl implements QuestionService {
     @Transactional(readOnly = true)
     public List<Question> findByTestId(Integer testId) {
         return questionRepository.findByTestIdOrderByOrderAsc(testId);
+    }
+
+    private void validateAnswersHaveImages(Question question) {
+        if (question.getAnswers() != null && question.getAnswers().stream().anyMatch(a -> a.getImage() == null)) {
+            throw new IllegalArgumentException("All answers must have an image");
+        }
     }
 }

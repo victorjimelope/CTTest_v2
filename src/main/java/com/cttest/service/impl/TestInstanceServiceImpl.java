@@ -42,6 +42,9 @@ public class TestInstanceServiceImpl implements TestInstanceService {
     @Override
     @Transactional
     public TestInstance save(TestInstance testInstance) {
+        if (testInstance.getPin() == null) {
+            testInstance.setPin(generatePin());
+        }
         return testInstanceRepository.save(testInstance);
     }
 

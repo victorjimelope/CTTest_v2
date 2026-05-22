@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import java.net.URI;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +25,6 @@ import jakarta.validation.Valid;
 public class UserController {
 
     private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
 
     @GetMapping
     public ResponseEntity<?> getAll(
@@ -46,10 +44,7 @@ public class UserController {
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<User> create(@Valid @RequestBody User user) {
-        if (user.getPassword() != null) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-        }
-        User saved = userService.save(user);
+        User saved = userService.save(user, true);
         return ResponseEntity.created(URI.create("/api/users/" + saved.getId())).body(saved);
     }
 
@@ -57,9 +52,6 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<User> update(@PathVariable Integer id, @Valid @RequestBody User user) {
         user.setId(id);
-        if (user.getNewPassword() != null && !user.getNewPassword().isBlank()) {
-            user.setPassword(passwordEncoder.encode(user.getNewPassword()));
-        }
         return ResponseEntity.ok(userService.update(user));
     }
 

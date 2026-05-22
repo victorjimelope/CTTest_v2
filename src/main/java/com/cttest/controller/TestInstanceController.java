@@ -44,9 +44,6 @@ public class TestInstanceController {
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<TestInstance> create(@Valid @RequestBody TestInstance testInstance) {
-        if (testInstance.getPin() == null) {
-            testInstance.setPin(testInstanceService.generatePin());
-        }
         TestInstance saved = testInstanceService.save(testInstance);
         return ResponseEntity.created(URI.create("/api/test-instances/" + saved.getId())).body(saved);
     }
