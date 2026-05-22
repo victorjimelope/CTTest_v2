@@ -1,6 +1,8 @@
 package com.cttest.controller;
 
 import com.cttest.model.entity.User;
+import com.cttest.model.dto.EntityDTOMapper;
+import com.cttest.model.dto.UserDTO;
 import com.cttest.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/api/users")
-public class UserController extends BaseController<User, UserService> {
+public class UserController extends BaseController<User, UserDTO, UserService> {
 
     public UserController(UserService service) {
         super(service);
@@ -30,11 +32,16 @@ public class UserController extends BaseController<User, UserService> {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<User> create(@Valid @RequestBody User user) {
+    public ResponseEntity<UserDTO> create(@Valid @RequestBody User user) {
         User saved = service.save(user, true);
         return ResponseEntity.created(
                 java.net.URI.create("/api/users/" + saved.getId())
-        ).body(saved);
+        ).body(toDto(saved));
+    }
+
+    @Override
+    protected UserDTO toDto(User entity) {
+        return EntityDTOMapper.toDTO(entity);
     }
 
     @Override

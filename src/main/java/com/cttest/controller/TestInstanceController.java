@@ -1,6 +1,8 @@
 package com.cttest.controller;
 
 import com.cttest.model.entity.TestInstance;
+import com.cttest.model.dto.EntityDTOMapper;
+import com.cttest.model.dto.TestInstanceDTO;
 import com.cttest.service.TestInstanceService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/test-instances")
-public class TestInstanceController extends BaseController<TestInstance, TestInstanceService> {
+public class TestInstanceController extends BaseController<TestInstance, TestInstanceDTO, TestInstanceService> {
 
     public TestInstanceController(TestInstanceService service) {
         super(service);
@@ -22,9 +24,14 @@ public class TestInstanceController extends BaseController<TestInstance, TestIns
             @RequestParam(required = false) Integer testId,
             Pageable pageable) {
         if (testId != null) {
-            return ResponseEntity.ok(service.findByTestId(testId));
+            return ResponseEntity.ok(service.findByTestId(testId).stream().map(this::toDto).toList());
         }
         return listAll(null, pageable);
+    }
+
+    @Override
+    protected TestInstanceDTO toDto(TestInstance entity) {
+        return EntityDTOMapper.toDTO(entity);
     }
 
     @Override

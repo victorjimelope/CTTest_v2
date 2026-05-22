@@ -1,6 +1,8 @@
 package com.cttest.controller;
 
 import com.cttest.model.entity.StudentGroup;
+import com.cttest.model.dto.EntityDTOMapper;
+import com.cttest.model.dto.StudentGroupDTO;
 import com.cttest.service.StudentGroupService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/student-groups")
-public class StudentGroupController extends BaseController<StudentGroup, StudentGroupService> {
+public class StudentGroupController extends BaseController<StudentGroup, StudentGroupDTO, StudentGroupService> {
 
     public StudentGroupController(StudentGroupService service) {
         super(service);
@@ -23,9 +25,14 @@ public class StudentGroupController extends BaseController<StudentGroup, Student
             @RequestParam(required = false) String search,
             Pageable pageable) {
         if (centerId != null) {
-            return ResponseEntity.ok(service.findByCenterId(centerId));
+            return ResponseEntity.ok(service.findByCenterId(centerId).stream().map(this::toDto).toList());
         }
         return listAll(search, pageable);
+    }
+
+    @Override
+    protected StudentGroupDTO toDto(StudentGroup entity) {
+        return EntityDTOMapper.toDTO(entity);
     }
 
     @Override
