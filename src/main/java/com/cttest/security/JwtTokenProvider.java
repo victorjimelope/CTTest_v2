@@ -15,12 +15,15 @@ public class JwtTokenProvider {
 
     private final SecretKey secretKey;
     private final long expirationMs;
+    private final long refreshExpirationMs;
 
     public JwtTokenProvider(
             @Value("${app.jwt.secret}") String secret,
-            @Value("${app.jwt.expiration-ms}") long expirationMs) {
+            @Value("${app.jwt.expiration-ms}") long expirationMs,
+            @Value("${app.jwt.refresh-expiration-ms}") long refreshExpirationMs) {
         this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
         this.expirationMs = expirationMs;
+        this.refreshExpirationMs = refreshExpirationMs;
     }
 
     public String generateToken(Integer userId, String username, boolean admin) {
@@ -31,6 +34,20 @@ public class JwtTokenProvider {
                 .subject(userId.toString())
                 .claim("username", username)
                 .claim("admin", admin)
+                .claim("type", "access")
+                .issuedAt(now)
+                .expiration(expiryDate)
+                .signWith(secretKey)
+                .compact();
+    }
+
+    public String generateRefreshToken(Integer userId) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + refreshExpirationMs);
+
+        return Jwts.builder()
+                .subject(userId.toString())
+                .claim("type", "refresh")
                 .issuedAt(now)
                 .expiration(expiryDate)
                 .signWith(secretKey)
@@ -45,6 +62,15 @@ public class JwtTokenProvider {
     public String getUsernameFromToken(String token) {
         Claims claims = parseToken(token);
         return claims.get("username", String.class);
+    }
+
+    public boolean isRefreshToken(String token) {
+        try {
+            Claims claims = parseToken(token);
+            return "refresh".equals(claims.get("type"));
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public boolean validateToken(String token) {

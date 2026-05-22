@@ -28,8 +28,9 @@ spring:
 
 app:
   jwt:
-    secret: ${JWT_SECRET:4a6f536e696c6c6579436f64655365637265744b6579466f724a57545369676e696e67}
+    secret: ${JWT_SECRET}
     expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+    refresh-expiration-ms: ${JWT_REFRESH_EXPIRATION_MS:604800000}
 
   jackson:
     serialization:

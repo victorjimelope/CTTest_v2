@@ -5,5 +5,6 @@ public record LoginResponse(
         String type,
         Integer userId,
         String username,
-        boolean admin) {
+        boolean admin,
+        String refreshToken) {
 }

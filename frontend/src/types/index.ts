@@ -94,6 +94,7 @@ export interface LoginResponse {
   userId: number
   username: string
   admin: boolean
+  refreshToken: string
 }
 
 export interface AnswerDataDTO {
