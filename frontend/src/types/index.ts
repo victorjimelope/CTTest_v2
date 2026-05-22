@@ -96,6 +96,28 @@ export interface LoginResponse {
   admin: boolean
 }
 
+export interface AnswerDataDTO {
+  id: number
+  order: number
+  imageData: string | null
+}
+
+export interface QuestionDataDTO {
+  id: number
+  order: number
+  question: string
+  imageData: string | null
+  answersLayout: string
+  answers: AnswerDataDTO[]
+}
+
+export interface TestDataDTO {
+  testId: number
+  testName: string
+  questions: QuestionDataDTO[]
+  totalQuestions: number
+}
+
 export interface PageResponse<T> {
   content: T[]
   totalElements: number

@@ -3,6 +3,8 @@ package com.cttest.controller;
 import com.cttest.model.dto.AnswerRequest;
 import com.cttest.model.dto.PinRequest;
 import com.cttest.model.dto.ScoreResult;
+import com.cttest.model.dto.TestDataDTO;
+import com.cttest.model.dto.TestDataMapper;
 import com.cttest.model.entity.StudentAnswer;
 import com.cttest.model.entity.StudentTest;
 import com.cttest.model.entity.Test;
@@ -64,11 +66,13 @@ public class PublicController {
         TestInstance instance = testInstanceService.findById(studentTest.getTestInstanceId());
         Test test = testService.findWithQuestionsById(instance.getTestId());
         Map<Integer, Integer> answers = studentAnswerService.findAnswersMapByStudentTestId(id);
+        TestDataDTO testData = TestDataMapper.toTestDataDTO(test);
 
         Map<String, Object> data = new HashMap<>();
-        data.put("studentTest", studentTest);
-        data.put("testInstance", instance);
-        data.put("test", test);
+        data.put("studentTestId", studentTest.getId());
+        data.put("studentName", studentTest.getStudent() != null ? studentTest.getStudent().getName() : null);
+        data.put("status", studentTest.getStatus());
+        data.put("testData", testData);
         data.put("answers", answers);
 
         if (studentTest.isClosed()) {

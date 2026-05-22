@@ -1,7 +1,7 @@
 import { useState, useEffect, FormEvent } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import api from '../api/axios'
-import type { Test } from '../types'
+import type { QuestionDataDTO } from '../types'
 
 export function PinEntry() {
   const [pin, setPin] = useState('')
@@ -52,13 +52,13 @@ export function TestTaking() {
   const { id } = useParams()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
-  const [test, setTest] = useState<Test | null>(null)
+  const [testData, setTestData] = useState<{testName: string; questions: QuestionDataDTO[]} | null>(null)
   const [answers, setAnswers] = useState<Record<number, number>>({})
   const [submitting, setSubmitting] = useState(false)
 
   useEffect(() => {
     api.get(`/public/student-tests/${id}/test-data`).then((r) => {
-      setTest(r.data.test)
+      setTestData(r.data.testData)
       setAnswers(r.data.answers ?? {})
       setLoading(false)
     }).catch(() => navigate('/take-test'))
@@ -85,19 +85,18 @@ export function TestTaking() {
   return (
     <div className="container" style={{ maxWidth: 800, marginTop: '2rem' }}>
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <h3>{test?.name}</h3>
+        <h3>{testData?.testName}</h3>
         <button className="btn btn-success" onClick={handleFinish} disabled={submitting}>
           {submitting ? 'Submitting...' : 'Finish Test'}
         </button>
       </div>
-      <p className="text-muted">{test?.description}</p>
 
-      {test?.questions.map((q, i) => (
+      {testData?.questions.map((q, i) => (
         <div key={q.id} className="card mb-3">
           <div className="card-body">
             <h6 className="card-title">Q{i + 1}. {q.question}</h6>
-            {q.image && (
-              <img src={q.image.imageData} alt="" className="img-fluid mb-2" style={{ maxHeight: 150 }} />
+            {q.imageData && (
+              <img src={q.imageData} alt="" className="img-fluid mb-2" style={{ maxHeight: 150 }} />
             )}
             <div className="row">
               {q.answers.map((a) => (
@@ -105,8 +104,8 @@ export function TestTaking() {
                   : q.answersLayout === 'GRID' ? 'col-6' : 'col-12'}>
                   <div className={`border rounded p-2 mb-2 ${answers[q.id] === a.id ? 'border-primary bg-primary-subtle' : ''}`}
                     style={{ cursor: 'pointer' }} onClick={() => selectAnswer(q.id, a.id)}>
-                    {a.image && (
-                      <img src={a.image.imageData} alt="" className="img-fluid d-block mb-1" style={{ maxHeight: 60 }} />
+                    {a.imageData && (
+                      <img src={a.imageData} alt="" className="img-fluid d-block mb-1" style={{ maxHeight: 60 }} />
                     )}
                     <div className="form-check">
                       <input type="radio" className="form-check-input" name={`q-${q.id}`}
