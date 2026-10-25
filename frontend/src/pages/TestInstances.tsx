@@ -184,7 +184,7 @@ export default function TestInstances() {
                   <td>{st.student?.name ?? '-'}</td>
                   <td>
                     <span className={`badge ${st.status === 'FINISHED' ? 'bg-success' : st.status === 'IN_PROGRESS' ? 'bg-warning' : 'bg-secondary'}`}>
-                      {st.status}
+                      {st.statusTitle ?? st.status}
                     </span>
                   </td>
                   <td>{st.score != null ? `${st.score}%` : '-'}</td>

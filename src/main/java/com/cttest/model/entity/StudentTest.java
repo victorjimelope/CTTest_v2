@@ -68,6 +68,10 @@ public class StudentTest extends BaseEntity implements Serializable {
                 || status.equals(StudentTestStatus.NOT_DONE));
     }
 
+    public String getStatusTitle() {
+        return status != null ? status.getTitle() : null;
+    }
+
     @Transient
     public String getStartDateAsString() {
         return startDate != null ? startDate.format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT)) : null;

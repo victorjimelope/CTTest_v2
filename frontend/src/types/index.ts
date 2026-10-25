@@ -86,6 +86,7 @@ export interface StudentTest {
   testInstanceId: number
   student: Student
   status: 'ASSIGNED' | 'IN_PROGRESS' | 'FINISHED' | 'NOT_DONE'
+  statusTitle: string | null
   startDate: string | null
   finishDate: string | null
   score: number | null

@@ -128,6 +128,10 @@ export default function TestInstanceDetail() {
     })
   }, [results, search, statusFilter, sort])
 
+  const statusTitleFor = (status: StudentTest['status']): string => {
+    return results.find((st) => st.status === status)?.statusTitle ?? STATUS_LABELS[status]
+  }
+
   const statusCounts = useMemo(() => {
     const counts: Record<string, number> = { ASSIGNED: 0, IN_PROGRESS: 0, FINISHED: 0, NOT_DONE: 0 }
     results.forEach((st) => { counts[st.status] = (counts[st.status] ?? 0) + 1 })
@@ -150,7 +154,7 @@ export default function TestInstanceDetail() {
     const header = 'Student,Status,Score,Start,Finish'
     const rows = filtered.map((st) => [
       st.student?.name ?? '',
-      STATUS_LABELS[st.status],
+      st.statusTitle ?? STATUS_LABELS[st.status],
       st.score ?? '',
       st.startDate ?? '',
       st.finishDate ?? '',
@@ -211,7 +215,7 @@ export default function TestInstanceDetail() {
                 <h6 className="card-title">Summary</h6>
                 {Object.entries(statusCounts).map(([status, count]) => (
                   <div key={status} className="d-flex justify-content-between border-bottom py-1">
-                    <span>{STATUS_LABELS[status as StudentTest['status']]}</span>
+                    <span>{statusTitleFor(status as StudentTest['status'])}</span>
                     <strong>{count}</strong>
                   </div>
                 ))}
@@ -285,7 +289,7 @@ export default function TestInstanceDetail() {
                     <td>{st.student?.name ?? '-'}</td>
                     <td>{formatDate(st.startDate)}</td>
                     <td>{formatDate(st.finishDate)}</td>
-                    <td><span className={`badge ${statusBadgeClass(st.status)}`}>{STATUS_LABELS[st.status]}</span></td>
+                    <td><span className={`badge ${statusBadgeClass(st.status)}`}>{st.statusTitle ?? STATUS_LABELS[st.status]}</span></td>
                     <td><strong>{st.score != null ? `${st.score}%` : '-'}</strong></td>
                     <td className="text-end">
                       <ActionMenu>
