@@ -71,11 +71,14 @@ export interface Test {
 export interface TestInstance {
   id: number
   testId: number
-  studentGroup: StudentGroup
-  status: 'IN_PROGRESS' | 'CLOSED'
-  assignedBy: User
-  assignedDate: string
+  testName: string | null
+  studentGroupId: number | null
+  studentGroupName: string | null
   pin: number
+  status: 'IN_PROGRESS' | 'CLOSED'
+  assignedDate: string
+  assignedByUserId: number | null
+  assignedByUsername: string | null
 }
 
 export interface StudentTest {

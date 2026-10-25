@@ -1,4 +1,5 @@
 import { useEffect, useState, FormEvent, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import api, { getErrorMessage } from '../api/axios'
 import Pagination from '../components/Pagination'
 import Modal from '../components/Modal'
@@ -7,6 +8,7 @@ import { useAuth } from '../auth/AuthContext'
 
 export default function TestInstances() {
   const { user } = useAuth()
+  const navigate = useNavigate()
   const [pageData, setPageData] = useState<PageResponse<TestInstance>>({ content: [], totalPages: 0, totalElements: 0, number: 0, size: 20, first: true, last: true, empty: true })
   const [page, setPage] = useState(0)
   const [tests, setTests] = useState<Test[]>([])
@@ -118,12 +120,13 @@ export default function TestInstances() {
             <tr key={inst.id}>
               <td>{inst.id}</td>
               <td>{getTestName(inst.testId)}</td>
-              <td>{inst.studentGroup?.name ?? '-'}</td>
+              <td>{inst.studentGroupName ?? '-'}</td>
               <td><span className={`badge ${inst.status === 'CLOSED' ? 'bg-secondary' : 'bg-success'}`}>{inst.status}</span></td>
               <td><code>{inst.pin}</code></td>
-              <td>{inst.assignedBy?.username ?? '-'}</td>
+              <td>{inst.assignedByUsername ?? '-'}</td>
               <td>{inst.assignedDate}</td>
               <td>
+                <button className="btn btn-sm btn-outline-primary me-1" onClick={() => navigate(`/test-instances/${inst.id}`)}><i className="fa-solid fa-up-right-from-square me-1"></i>View</button>
                 <button className="btn btn-sm btn-outline-info me-1" onClick={() => viewResults(inst)}><i className="fa-solid fa-eye me-1"></i>Results</button>
                 {inst.status === 'IN_PROGRESS' && (
                   <button className="btn btn-sm btn-outline-warning me-1" onClick={() => handleClose(inst)}><i className="fa-solid fa-xmark me-1"></i>Close</button>
