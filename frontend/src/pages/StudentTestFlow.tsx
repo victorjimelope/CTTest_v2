@@ -123,11 +123,17 @@ export function TestTaking() {
   )
 }
 
+interface TestResultData {
+  score: number
+  correctCount: number
+  totalQuestions: number
+}
+
 export function TestResult() {
   const { id } = useParams()
   const navigate = useNavigate()
   const location = useLocation()
-  const [result, setResult] = useState<any>(location.state)
+  const [result, setResult] = useState<TestResultData | null>(location.state as TestResultData | null)
 
   useEffect(() => {
     if (!result && id) {

@@ -1,5 +1,5 @@
 import { useEffect, useState, FormEvent, useCallback } from 'react'
-import api from '../api/axios'
+import api, { getErrorMessage } from '../api/axios'
 import Pagination from '../components/Pagination'
 import Modal from '../components/Modal'
 import type { TestInstance, Test, StudentGroup, StudentTest, PageResponse } from '../types'
@@ -22,16 +22,23 @@ export default function TestInstances() {
     const controller = new AbortController()
     setLoading(true)
     setError(null)
-    api.get<PageResponse<TestInstance>>('/test-instances', { params: { page, size: 20 }, signal: controller.signal })
+
+    const p1 = api.get<PageResponse<TestInstance>>('/test-instances', { params: { page, size: 20 }, signal: controller.signal })
       .then((r) => setPageData(r.data))
       .catch((err) => { if (!controller.signal.aborted) setError(err.response?.data?.message ?? err.message) })
-    api.get<PageResponse<Test>>('/tests', { params: { page: 0, size: 1000 }, signal: controller.signal })
+
+    const p2 = api.get<PageResponse<Test>>('/tests', { params: { page: 0, size: 1000 }, signal: controller.signal })
       .then((r) => setTests(r.data.content))
       .catch(() => {})
-    api.get<PageResponse<StudentGroup>>('/student-groups', { params: { page: 0, size: 1000 }, signal: controller.signal })
+
+    const p3 = api.get<PageResponse<StudentGroup>>('/student-groups', { params: { page: 0, size: 1000 }, signal: controller.signal })
       .then((r) => setGroups(r.data.content))
       .catch(() => {})
-      .finally(() => { if (!controller.signal.aborted) setLoading(false) })
+
+    Promise.all([p1, p2, p3]).finally(() => {
+      if (!controller.signal.aborted) setLoading(false)
+    })
+
     return () => controller.abort()
   }, [page])
 
@@ -55,8 +62,8 @@ export default function TestInstances() {
       })
       setShowModal(false)
       load()
-    } catch (err: any) {
-      setError(err.response?.data?.message ?? err.message)
+    } catch (err) {
+      setError(getErrorMessage(err))
     }
   }
 
@@ -65,8 +72,8 @@ export default function TestInstances() {
     try {
       await api.put(`/test-instances/${inst.id}`, { ...inst, status: 'CLOSED' })
       load()
-    } catch (err: any) {
-      setError(err.response?.data?.message ?? err.message)
+    } catch (err) {
+      setError(getErrorMessage(err))
     }
   }
 
@@ -76,8 +83,8 @@ export default function TestInstances() {
       await api.delete(`/test-instances/${id}`)
       if (detail?.inst.id === id) setDetail(null)
       load()
-    } catch (err: any) {
-      setError(err.response?.data?.message ?? err.message)
+    } catch (err) {
+      setError(getErrorMessage(err))
     }
   }
 
@@ -85,8 +92,8 @@ export default function TestInstances() {
     try {
       const res = await api.get<StudentTest[]>('/student-tests', { params: { testInstanceId: inst.id } })
       setDetail({ inst, results: res.data })
-    } catch (err: any) {
-      setError(err.response?.data?.message ?? err.message)
+    } catch (err) {
+      setError(getErrorMessage(err))
     }
   }
 
@@ -99,7 +106,7 @@ export default function TestInstances() {
       {error && <div className="alert alert-danger alert-dismissible" role="alert">{error}<button type="button" className="btn-close" onClick={() => setError(null)} /></div>}
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h3 className="mb-0">Test Instances</h3>
-        <button className="btn btn-primary" onClick={openCreate}>+ New</button>
+        <button className="btn btn-primary" onClick={openCreate}><i className="fa-solid fa-plus me-1"></i>New</button>
       </div>
 
       <table className="table table-striped">
@@ -117,11 +124,11 @@ export default function TestInstances() {
               <td>{inst.assignedBy?.username ?? '-'}</td>
               <td>{inst.assignedDate}</td>
               <td>
-                <button className="btn btn-sm btn-outline-info me-1" onClick={() => viewResults(inst)}>Results</button>
+                <button className="btn btn-sm btn-outline-info me-1" onClick={() => viewResults(inst)}><i className="fa-solid fa-eye me-1"></i>Results</button>
                 {inst.status === 'IN_PROGRESS' && (
-                  <button className="btn btn-sm btn-outline-warning me-1" onClick={() => handleClose(inst)}>Close</button>
+                  <button className="btn btn-sm btn-outline-warning me-1" onClick={() => handleClose(inst)}><i className="fa-solid fa-xmark me-1"></i>Close</button>
                 )}
-                <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(inst.id)}>Delete</button>
+                <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(inst.id)}><i className="fa-solid fa-trash-can me-1"></i>Delete</button>
               </td>
             </tr>
           ))}
@@ -152,8 +159,8 @@ export default function TestInstances() {
             </div>
           </div>
           <div className="modal-footer">
-            <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Cancel</button>
-            <button type="submit" className="btn btn-primary">Create</button>
+            <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}><i className="fa-solid fa-xmark me-1"></i>Cancel</button>
+            <button type="submit" className="btn btn-primary"><i className="fa-solid fa-check me-1"></i>Create</button>
           </div>
         </form>
       </Modal>
@@ -185,7 +192,7 @@ export default function TestInstances() {
           </table>
         </div>
         <div className="modal-footer">
-          <button type="button" className="btn btn-secondary" onClick={() => setDetail(null)}>Close</button>
+          <button type="button" className="btn btn-secondary" onClick={() => setDetail(null)}><i className="fa-solid fa-xmark me-1"></i>Close</button>
         </div>
       </Modal>
     </>

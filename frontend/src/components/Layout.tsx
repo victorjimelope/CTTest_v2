@@ -18,34 +18,34 @@ export default function Layout() {
       <nav className="d-flex flex-column bg-dark text-white p-3" style={{ width: 250 }}>
         <h5 className="mb-4 px-2">CTTest</h5>
         <div className="list-group list-group-flush">
-          <NavLink to="/" end className={linkClass}>
-            Dashboard
+          <NavLink to="/dashboard" className={linkClass}>
+            <i className="fa-solid fa-gauge-high me-2"></i>Dashboard
           </NavLink>
           <NavLink to="/tests" className={linkClass}>
-            Tests
+            <i className="fa-solid fa-book-open me-2"></i>Tests
           </NavLink>
           <NavLink to="/test-instances" className={linkClass}>
-            Instances
+            <i className="fa-regular fa-copy me-2"></i>Instances
           </NavLink>
           <NavLink to="/students" className={linkClass}>
-            Students
+            <i className="fa-solid fa-graduation-cap me-2"></i>Students
           </NavLink>
           <NavLink to="/student-groups" className={linkClass}>
-            Groups
+            <i className="fa-solid fa-users-rectangle me-2"></i>Groups
           </NavLink>
           <NavLink to="/centers" className={linkClass}>
-            Centers
+            <i className="fa-solid fa-school me-2"></i>Centers
           </NavLink>
           {isAdmin && (
             <NavLink to="/users" className={linkClass}>
-              Users
+              <i className="fa-solid fa-circle-user me-2"></i>Users
             </NavLink>
           )}
         </div>
         <div className="mt-auto">
           <div className="small px-2 mb-2 text-secondary">{user?.username}</div>
           <button className="btn btn-outline-light btn-sm w-100" onClick={handleLogout}>
-            Sign out
+            <i className="fa-solid fa-right-from-bracket me-2"></i>Sign out
           </button>
         </div>
       </nav>

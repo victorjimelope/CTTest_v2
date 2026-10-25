@@ -1,7 +1,8 @@
-import { useEffect, useState, FormEvent, useCallback } from 'react'
-import api from '../api/axios'
+import { useEffect, useState, FormEvent, useCallback, useRef } from 'react'
+import api, { getErrorMessage } from '../api/axios'
 import Pagination from '../components/Pagination'
 import Modal from '../components/Modal'
+import useDebounce from '../hooks/useDebounce'
 import type { User, Center, StudentGroup, PageResponse } from '../types'
 
 export default function Users() {
@@ -19,13 +20,16 @@ export default function Users() {
   const [selectedGroupIds, setSelectedGroupIds] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const initialLoad = useRef(true)
+  const debouncedSearch = useDebounce(search, 300)
 
   const load = useCallback(() => {
     const controller = new AbortController()
-    setLoading(true)
+    if (initialLoad.current) setLoading(true)
+    initialLoad.current = false
     setError(null)
     const params: Record<string, string | number> = { page, size: 20 }
-    if (search) params.search = search
+    if (debouncedSearch) params.search = debouncedSearch
     api.get<PageResponse<User>>('/users', { params, signal: controller.signal })
       .then((r) => setPageData(r.data))
       .catch((err) => { if (!controller.signal.aborted) setError(err.response?.data?.message ?? err.message) })
@@ -37,7 +41,7 @@ export default function Users() {
       .catch(() => {})
       .finally(() => { if (!controller.signal.aborted) setLoading(false) })
     return () => controller.abort()
-  }, [page, search])
+  }, [page, debouncedSearch])
 
   useEffect(() => load(), [load])
 
@@ -82,8 +86,8 @@ export default function Users() {
       }
       setShowModal(false)
       load()
-    } catch (err: any) {
-      setError(err.response?.data?.message ?? err.message)
+    } catch (err) {
+      setError(getErrorMessage(err))
     }
   }
 
@@ -92,8 +96,8 @@ export default function Users() {
     try {
       await api.delete(`/users/${id}`)
       load()
-    } catch (err: any) {
-      setError(err.response?.data?.message ?? err.message)
+    } catch (err) {
+      setError(getErrorMessage(err))
     }
   }
 

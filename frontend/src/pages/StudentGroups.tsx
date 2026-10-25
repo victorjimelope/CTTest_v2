@@ -1,7 +1,8 @@
-import { useEffect, useState, FormEvent, useCallback } from 'react'
-import api from '../api/axios'
+import { useEffect, useState, FormEvent, useCallback, useRef } from 'react'
+import api, { getErrorMessage } from '../api/axios'
 import Pagination from '../components/Pagination'
 import Modal from '../components/Modal'
+import useDebounce from '../hooks/useDebounce'
 import type { StudentGroup, Center, PageResponse } from '../types'
 
 export default function StudentGroups() {
@@ -15,22 +16,31 @@ export default function StudentGroups() {
   const [centerId, setCenterId] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const initialLoad = useRef(true)
+  const debouncedSearch = useDebounce(search, 300)
 
   const load = useCallback(() => {
     const controller = new AbortController()
-    setLoading(true)
+    if (initialLoad.current) setLoading(true)
+    initialLoad.current = false
     setError(null)
     const params: Record<string, string | number> = { page, size: 20 }
-    if (search) params.search = search
-    api.get<PageResponse<StudentGroup>>('/student-groups', { params, signal: controller.signal })
+    if (debouncedSearch) params.search = debouncedSearch
+
+    const p1 = api.get<PageResponse<StudentGroup>>('/student-groups', { params, signal: controller.signal })
       .then((r) => setPageData(r.data))
       .catch((err) => { if (!controller.signal.aborted) setError(err.response?.data?.message ?? err.message) })
-    api.get<PageResponse<Center>>('/centers', { params: { page: 0, size: 1000 }, signal: controller.signal })
+
+    const p2 = api.get<PageResponse<Center>>('/centers', { params: { page: 0, size: 1000 }, signal: controller.signal })
       .then((r) => setCenters(r.data.content))
       .catch(() => {})
-      .finally(() => { if (!controller.signal.aborted) setLoading(false) })
+
+    Promise.all([p1, p2]).finally(() => {
+      if (!controller.signal.aborted) setLoading(false)
+    })
+
     return () => controller.abort()
-  }, [page, search])
+  }, [page, debouncedSearch])
 
   useEffect(() => load(), [load])
 
@@ -58,8 +68,8 @@ export default function StudentGroups() {
       }
       setShowModal(false)
       load()
-    } catch (err: any) {
-      setError(err.response?.data?.message ?? err.message)
+    } catch (err) {
+      setError(getErrorMessage(err))
     }
   }
 
@@ -68,8 +78,8 @@ export default function StudentGroups() {
     try {
       await api.delete(`/student-groups/${id}`)
       load()
-    } catch (err: any) {
-      setError(err.response?.data?.message ?? err.message)
+    } catch (err) {
+      setError(getErrorMessage(err))
     }
   }
 

@@ -16,10 +16,10 @@ export default function Pagination({ page, totalPages, onPageChange }: Paginatio
     <nav>
       <ul className="pagination pagination-sm mb-0">
         <li className={`page-item ${page === 0 ? 'disabled' : ''}`}>
-          <button className="page-link" onClick={() => onPageChange(0)}>&laquo;</button>
+          <button className="page-link" onClick={() => onPageChange(0)}><i className="fa-solid fa-angles-left"></i></button>
         </li>
         <li className={`page-item ${page === 0 ? 'disabled' : ''}`}>
-          <button className="page-link" onClick={() => onPageChange(page - 1)}>&lsaquo;</button>
+          <button className="page-link" onClick={() => onPageChange(page - 1)}><i className="fa-solid fa-chevron-left"></i></button>
         </li>
         {pages.map((p) => (
           <li key={p} className={`page-item ${p === page ? 'active' : ''}`}>
@@ -27,10 +27,10 @@ export default function Pagination({ page, totalPages, onPageChange }: Paginatio
           </li>
         ))}
         <li className={`page-item ${page === totalPages - 1 ? 'disabled' : ''}`}>
-          <button className="page-link" onClick={() => onPageChange(page + 1)}>&rsaquo;</button>
+          <button className="page-link" onClick={() => onPageChange(page + 1)}><i className="fa-solid fa-chevron-right"></i></button>
         </li>
         <li className={`page-item ${page === totalPages - 1 ? 'disabled' : ''}`}>
-          <button className="page-link" onClick={() => onPageChange(totalPages - 1)}>&raquo;</button>
+          <button className="page-link" onClick={() => onPageChange(totalPages - 1)}><i className="fa-solid fa-angles-right"></i></button>
         </li>
       </ul>
     </nav>

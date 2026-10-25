@@ -1,6 +1,6 @@
 import { useEffect, useState, FormEvent, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import api from '../api/axios'
+import api, { getErrorMessage } from '../api/axios'
 import ImageUpload from '../components/ImageUpload'
 import Modal from '../components/Modal'
 import type { Test, Question } from '../types'
@@ -53,8 +53,8 @@ export default function TestDetail() {
     setEditingQ(q)
     setQText(q.question)
     setQLayout(q.answersLayout)
-    setQImage(q.image?.imageData ?? null)
-    setAnswers(q.answers.map((a) => ({ image: a.image?.imageData ?? null, correct: a.correct })))
+    setQImage(q.imageData ?? null)
+    setAnswers(q.answers.map((a) => ({ image: a.imageData ?? null, correct: a.correct })))
     setQModal(true)
   }
 
@@ -84,14 +84,15 @@ export default function TestDetail() {
         })),
       }
       if (editingQ) {
-        await api.put(`/questions/${editingQ.id}`, payload)
+        const res = await api.put(`/questions/${editingQ.id}`, payload)
+        setTest((prev) => prev ? { ...prev, questions: prev.questions.map((q) => q.id === editingQ.id ? res.data : q) } : prev)
       } else {
-        await api.post(`/tests/${id}/questions`, payload)
+        const res = await api.post(`/tests/${id}/questions`, payload)
+        setTest((prev) => prev ? { ...prev, questions: [...prev.questions, res.data] } : prev)
       }
       setQModal(false)
-      load()
-    } catch (err: any) {
-      setError(err.response?.data?.message ?? err.message)
+    } catch (err) {
+      setError(getErrorMessage(err))
     }
   }
 
@@ -99,18 +100,27 @@ export default function TestDetail() {
     if (!confirm('Delete this question and all its answers?')) return
     try {
       await api.delete(`/questions/${qid}`)
-      load()
-    } catch (err: any) {
-      setError(err.response?.data?.message ?? err.message)
+      setTest((prev) => prev ? { ...prev, questions: prev.questions.filter((q) => q.id !== qid) } : prev)
+    } catch (err) {
+      setError(getErrorMessage(err))
     }
   }
 
   const handleMoveQuestion = async (qid: number, direction: 'up' | 'down') => {
     try {
       await api.put(`/questions/${qid}/move`, { direction })
-      load()
-    } catch (err: any) {
-      setError(err.response?.data?.message ?? err.message)
+      setTest((prev) => {
+        if (!prev) return prev
+        const questions = [...prev.questions]
+        const idx = questions.findIndex((q) => q.id === qid)
+        if (idx === -1) return prev
+        const swapIdx = direction === 'up' ? idx - 1 : idx + 1
+        if (swapIdx < 0 || swapIdx >= questions.length) return prev
+        ;[questions[idx], questions[swapIdx]] = [questions[swapIdx], questions[idx]]
+        return { ...prev, questions: questions.map((q, i) => ({ ...q, order: i + 1 })) }
+      })
+    } catch (err) {
+      setError(getErrorMessage(err))
     }
   }
 
@@ -119,8 +129,8 @@ export default function TestDetail() {
     try {
       await api.delete(`/tests/${test!.id}`)
       navigate('/tests')
-    } catch (err: any) {
-      setError(err.response?.data?.message ?? err.message)
+    } catch (err) {
+      setError(getErrorMessage(err))
     }
   }
 
@@ -142,13 +152,13 @@ export default function TestDetail() {
           </p>
         </div>
         <div>
-          <button className="btn btn-outline-danger btn-sm" onClick={handleDelete}>Delete Test</button>
+          <button className="btn btn-outline-danger btn-sm" onClick={handleDelete}><i className="fa-solid fa-trash-can me-1"></i>Delete Test</button>
         </div>
       </div>
 
       <div className="d-flex justify-content-between mb-3">
         <h5 className="mb-0">Questions ({test.questions.length})</h5>
-        <button className="btn btn-primary btn-sm" onClick={openNewQuestion}>+ Add Question</button>
+        <button className="btn btn-primary btn-sm" onClick={openNewQuestion}><i className="fa-solid fa-plus me-1"></i>Add Question</button>
       </div>
 
       {test.questions.map((q, i) => (
@@ -157,18 +167,18 @@ export default function TestDetail() {
             <div className="d-flex justify-content-between">
               <h6 className="card-title">Q{i + 1}. {q.question}</h6>
               <div>
-                <button className="btn btn-sm btn-outline-secondary me-1" onClick={() => handleMoveQuestion(q.id, 'up')} disabled={i === 0}>&#x25B2;</button>
-                <button className="btn btn-sm btn-outline-secondary me-1" onClick={() => handleMoveQuestion(q.id, 'down')} disabled={i === test.questions.length - 1}>&#x25BC;</button>
-                <button className="btn btn-sm btn-outline-primary me-1" onClick={() => openEditQuestion(q)}>Edit</button>
-                <button className="btn btn-sm btn-outline-danger" onClick={() => handleDeleteQuestion(q.id)}>Del</button>
+                <button className="btn btn-sm btn-outline-secondary me-1" onClick={() => handleMoveQuestion(q.id, 'up')} disabled={i === 0}><i className="fa-solid fa-chevron-up"></i></button>
+                <button className="btn btn-sm btn-outline-secondary me-1" onClick={() => handleMoveQuestion(q.id, 'down')} disabled={i === test.questions.length - 1}><i className="fa-solid fa-chevron-down"></i></button>
+                <button className="btn btn-sm btn-outline-primary me-1" onClick={() => openEditQuestion(q)}><i className="fa-solid fa-pen-ruler me-1"></i>Edit</button>
+                <button className="btn btn-sm btn-outline-danger" onClick={() => handleDeleteQuestion(q.id)}><i className="fa-solid fa-trash-can me-1"></i>Del</button>
               </div>
             </div>
-            {q.image && <img src={q.image.imageData} alt="" className="img-fluid mb-2" style={{ maxHeight: 200 }} />}
+            {q.imageData && <img src={q.imageData} alt="" className="img-fluid mb-2" style={{ maxHeight: 200 }} />}
             <div className="row">
               {q.answers.map((a) => (
                 <div key={a.id} className={q.answersLayout === 'COLUMNS' ? 'col-3' : q.answersLayout === 'GRID' ? 'col-6' : 'col-12'}>
                   <div className={`border rounded p-2 mb-2 ${a.correct ? 'border-success bg-success-subtle' : ''}`}>
-                    {a.image && <img src={a.image.imageData} alt="" className="img-fluid d-block mb-1" style={{ maxHeight: 80 }} />}
+                    {a.imageData && <img src={a.imageData} alt="" className="img-fluid d-block mb-1" style={{ maxHeight: 80 }} />}
                     <small>Answer #{a.order}</small>
                     {a.correct && <span className="badge bg-success ms-1">Correct</span>}
                   </div>
@@ -208,17 +218,17 @@ export default function TestDetail() {
                       onChange={() => setAnswerCorrect(idx)} />
                     <small className="text-muted">Correct</small>
                     <button type="button" className="btn btn-sm btn-outline-danger ms-auto"
-                      onClick={() => removeAnswerField(idx)} disabled={answers.length <= 2}>X</button>
+                      onClick={() => removeAnswerField(idx)} disabled={answers.length <= 2}><i className="fa-solid fa-xmark"></i></button>
                   </div>
                   <ImageUpload existingImage={a.image} onImageChange={(b64) => setAnswerImage(idx, b64)} />
                 </div>
               ))}
-              <button type="button" className="btn btn-sm btn-outline-secondary mt-1" onClick={addAnswerField}>+ Add Answer</button>
+              <button type="button" className="btn btn-sm btn-outline-secondary mt-1" onClick={addAnswerField}><i className="fa-solid fa-plus me-1"></i>Add Answer</button>
             </div>
           </div>
           <div className="modal-footer">
-            <button type="button" className="btn btn-secondary" onClick={() => setQModal(false)}>Cancel</button>
-            <button type="submit" className="btn btn-primary">Save</button>
+            <button type="button" className="btn btn-secondary" onClick={() => setQModal(false)}><i className="fa-solid fa-xmark me-1"></i>Cancel</button>
+            <button type="submit" className="btn btn-primary"><i className="fa-solid fa-check me-1"></i>Save</button>
           </div>
         </form>
       </Modal>

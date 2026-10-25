@@ -40,16 +40,17 @@ export interface Image {
 export interface Answer {
   id: number
   order: number
-  image: Image | null
+  imageData: string | null
+  mimeType: string | null
   correct: boolean
-  countTotal: number
 }
 
 export interface Question {
   id: number
   order: number
   question: string
-  image: Image | null
+  imageData: string | null
+  mimeType: string | null
   answersLayout: 'COLUMNS' | 'ROWS' | 'GRID'
   answers: Answer[]
   countTotal: number

@@ -4,6 +4,7 @@ import ErrorBoundary from './components/ErrorBoundary'
 import PrivateRoute from './components/PrivateRoute'
 import Layout from './components/Layout'
 import LoginPage from './auth/LoginPage'
+import HomePage from './pages/HomePage'
 import { PinEntry, TestTaking, TestResult } from './pages/StudentTestFlow'
 import Dashboard from './pages/Dashboard'
 import Centers from './pages/Centers'
@@ -13,6 +14,7 @@ import TestInstances from './pages/TestInstances'
 import Students from './pages/Students'
 import StudentGroups from './pages/StudentGroups'
 import Users from './pages/Users'
+import NotFound from './pages/NotFound'
 import { Suspense } from 'react'
 
 function Spinner() {
@@ -26,6 +28,7 @@ export default function App() {
         <ErrorBoundary>
           <Suspense fallback={<Spinner />}>
             <Routes>
+              <Route path="/" element={<HomePage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/take-test" element={<PinEntry />} />
               <Route path="/take-test/:id" element={<TestTaking />} />
@@ -37,7 +40,7 @@ export default function App() {
                   </PrivateRoute>
                 }
               >
-                <Route path="/" element={<Dashboard />} />
+                <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/centers" element={<Centers />} />
                 <Route path="/tests" element={<Tests />} />
                 <Route path="/tests/:id" element={<TestDetail />} />
@@ -46,6 +49,7 @@ export default function App() {
                 <Route path="/student-groups" element={<StudentGroups />} />
                 <Route path="/users" element={<Users />} />
               </Route>
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
         </ErrorBoundary>

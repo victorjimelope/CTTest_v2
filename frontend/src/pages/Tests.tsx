@@ -1,8 +1,9 @@
-import { useEffect, useState, FormEvent, useCallback } from 'react'
+import { useEffect, useState, FormEvent, useCallback, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import api from '../api/axios'
+import api, { getErrorMessage } from '../api/axios'
 import Pagination from '../components/Pagination'
 import Modal from '../components/Modal'
+import useDebounce from '../hooks/useDebounce'
 import type { Test, Center, PageResponse } from '../types'
 
 export default function Tests() {
@@ -17,21 +18,31 @@ export default function Tests() {
   const [centerId, setCenterId] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const initialLoad = useRef(true)
+  const debouncedSearch = useDebounce(search, 300)
 
   const load = useCallback(() => {
     const controller = new AbortController()
-    setLoading(true)
+    if (initialLoad.current) setLoading(true)
+    initialLoad.current = false
     setError(null)
     const params: Record<string, string | number> = { page, size: 20 }
-    if (search) params.search = search
-    api.get<PageResponse<Test>>('/tests', { params, signal: controller.signal })
+    if (debouncedSearch) params.search = debouncedSearch
+
+    const p1 = api.get<PageResponse<Test>>('/tests', { params, signal: controller.signal })
       .then((r) => setPageData(r.data))
       .catch((err) => { if (!controller.signal.aborted) setError(err.response?.data?.message ?? err.message) })
-    api.get<PageResponse<Center>>('/centers', { params: { page: 0, size: 1000 }, signal: controller.signal })
+
+    const p2 = api.get<PageResponse<Center>>('/centers', { params: { page: 0, size: 1000 }, signal: controller.signal })
       .then((r) => setCenters(r.data.content))
       .catch(() => {})
+
+    Promise.all([p1, p2]).finally(() => {
+      if (!controller.signal.aborted) setLoading(false)
+    })
+
     return () => controller.abort()
-  }, [page, search])
+  }, [page, debouncedSearch])
 
   useEffect(() => load(), [load])
 
@@ -61,8 +72,8 @@ export default function Tests() {
       }
       setShowModal(false)
       load()
-    } catch (err: any) {
-      setError(err.response?.data?.message ?? err.message)
+    } catch (err) {
+      setError(getErrorMessage(err))
     }
   }
 
@@ -71,8 +82,8 @@ export default function Tests() {
     try {
       await api.delete(`/tests/${id}`)
       load()
-    } catch (err: any) {
-      setError(err.response?.data?.message ?? err.message)
+    } catch (err) {
+      setError(getErrorMessage(err))
     }
   }
 
@@ -82,8 +93,8 @@ export default function Tests() {
     try {
       await api.post('/tests', { ...t, id: null, name })
       load()
-    } catch (err: any) {
-      setError(err.response?.data?.message ?? err.message)
+    } catch (err) {
+      setError(getErrorMessage(err))
     }
   }
 
@@ -92,8 +103,8 @@ export default function Tests() {
     try {
       await api.put(`/tests/${t.id}`, { ...t, status })
       load()
-    } catch (err: any) {
-      setError(err.response?.data?.message ?? err.message)
+    } catch (err) {
+      setError(getErrorMessage(err))
     }
   }
 
@@ -105,9 +116,12 @@ export default function Tests() {
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h3 className="mb-0">Tests</h3>
         <div className="d-flex gap-2">
-          <input type="text" className="form-control form-control-sm" placeholder="Search..." value={search}
-            onChange={(e) => { setSearch(e.target.value); setPage(0) }} style={{ width: 200 }} />
-          <button className="btn btn-primary" onClick={openCreate}>+ New</button>
+          <div className="input-group input-group-sm" style={{ width: 200 }}>
+            <span className="input-group-text"><i className="fa-solid fa-search"></i></span>
+            <input type="text" className="form-control" placeholder="Search..." value={search}
+              onChange={(e) => { setSearch(e.target.value); setPage(0) }} />
+          </div>
+          <button className="btn btn-primary" onClick={openCreate}><i className="fa-solid fa-plus me-1"></i>New</button>
         </div>
       </div>
 
@@ -136,22 +150,22 @@ export default function Tests() {
               <td>{t.questions?.length ?? 0}</td>
               <td>
                 <div className="dropdown">
-                  <button className="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">Actions</button>
+                  <button className="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown"><i className="fa-solid fa-gear me-1"></i>Actions</button>
                   <ul className="dropdown-menu dropdown-menu-end">
-                    <li><Link to={`/tests/${t.id}`} className="dropdown-item">View</Link></li>
-                    <li><button className="dropdown-item" onClick={() => openEdit(t)}>Edit</button></li>
-                    <li><button className="dropdown-item" onClick={() => handleClone(t)}>Clone</button></li>
+                    <li><Link to={`/tests/${t.id}`} className="dropdown-item"><i className="fa-solid fa-eye fa-fw me-2"></i>View</Link></li>
+                    <li><button className="dropdown-item" onClick={() => openEdit(t)}><i className="fa-solid fa-pen-ruler fa-fw me-2"></i>Edit</button></li>
+                    <li><button className="dropdown-item" onClick={() => handleClone(t)}><i className="fa-regular fa-clone fa-fw me-2"></i>Clone</button></li>
                     {t.status === 'DRAFT' && (
-                      <li><button className="dropdown-item" onClick={() => handleStatusChange(t, 'ACTIVE')}>Activate</button></li>
+                      <li><button className="dropdown-item" onClick={() => handleStatusChange(t, 'ACTIVE')}><i className="fa-solid fa-check fa-fw me-2"></i>Activate</button></li>
                     )}
                     {t.status === 'ACTIVE' && (
                       <>
-                        <li><button className="dropdown-item" onClick={() => handleStatusChange(t, 'DRAFT')}>Set Draft</button></li>
-                        <li><button className="dropdown-item" onClick={() => handleStatusChange(t, 'LOCKED')}>Lock</button></li>
+                        <li><button className="dropdown-item" onClick={() => handleStatusChange(t, 'DRAFT')}><i className="fa-solid fa-pen-ruler fa-fw me-2"></i>Set Draft</button></li>
+                        <li><button className="dropdown-item" onClick={() => handleStatusChange(t, 'LOCKED')}><i className="fa-solid fa-lock fa-fw me-2"></i>Lock</button></li>
                       </>
                     )}
                     <li><hr className="dropdown-divider" /></li>
-                    <li><button className="dropdown-item text-danger" onClick={() => handleDelete(t.id)}>Delete</button></li>
+                    <li><button className="dropdown-item text-danger" onClick={() => handleDelete(t.id)}><i className="fa-solid fa-trash-can fa-fw me-2"></i>Delete</button></li>
                   </ul>
                 </div>
               </td>
@@ -187,8 +201,8 @@ export default function Tests() {
             </div>
           </div>
           <div className="modal-footer">
-            <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Cancel</button>
-            <button type="submit" className="btn btn-primary">Save</button>
+            <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}><i className="fa-solid fa-xmark me-1"></i>Cancel</button>
+            <button type="submit" className="btn btn-primary"><i className="fa-solid fa-check me-1"></i>Save</button>
           </div>
         </form>
       </Modal>

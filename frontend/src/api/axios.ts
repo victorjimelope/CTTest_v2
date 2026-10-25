@@ -15,4 +15,12 @@ api.interceptors.response.use(
   }
 )
 
+export function getErrorMessage(err: unknown): string {
+  if (axios.isAxiosError(err)) {
+    return err.response?.data?.message ?? err.message
+  }
+  return err instanceof Error ? err.message : String(err)
+}
+
 export default api
+
