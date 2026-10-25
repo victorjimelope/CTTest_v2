@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import api, { getErrorMessage } from '../api/axios'
 import Modal from '../components/Modal'
+import ActionMenu from '../components/ActionMenu'
 import Pagination from '../components/Pagination'
 import type { QuestionDataDTO, StudentTest, Test, TestInstance } from '../types'
 
@@ -287,7 +288,9 @@ export default function TestInstanceDetail() {
                     <td><span className={`badge ${statusBadgeClass(st.status)}`}>{STATUS_LABELS[st.status]}</span></td>
                     <td><strong>{st.score != null ? `${st.score}%` : '-'}</strong></td>
                     <td className="text-end">
-                      <button className="btn btn-sm btn-outline-primary" onClick={() => openDetail(st)}><i className="fa-solid fa-eye"></i></button>
+                      <ActionMenu>
+                        <li><button className="dropdown-item" onClick={() => openDetail(st)}><i className="fa-solid fa-eye fa-fw me-2"></i>See details</button></li>
+                      </ActionMenu>
                     </td>
                   </tr>
                 ))}

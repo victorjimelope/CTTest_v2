@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import api, { getErrorMessage } from '../api/axios'
 import Pagination from '../components/Pagination'
 import Modal from '../components/Modal'
+import ActionMenu from '../components/ActionMenu'
 import type { TestInstance, Test, StudentGroup, StudentTest, PageResponse } from '../types'
 import { useAuth } from '../auth/AuthContext'
 
@@ -125,13 +126,16 @@ export default function TestInstances() {
               <td><code>{inst.pin}</code></td>
               <td>{inst.assignedByUsername ?? '-'}</td>
               <td>{inst.assignedDate}</td>
-              <td>
-                <button className="btn btn-sm btn-outline-primary me-1" onClick={() => navigate(`/test-instances/${inst.id}`)}><i className="fa-solid fa-up-right-from-square me-1"></i>View</button>
-                <button className="btn btn-sm btn-outline-info me-1" onClick={() => viewResults(inst)}><i className="fa-solid fa-eye me-1"></i>Results</button>
-                {inst.status === 'IN_PROGRESS' && (
-                  <button className="btn btn-sm btn-outline-warning me-1" onClick={() => handleClose(inst)}><i className="fa-solid fa-xmark me-1"></i>Close</button>
-                )}
-                <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(inst.id)}><i className="fa-solid fa-trash-can me-1"></i>Delete</button>
+              <td className="text-end">
+                <ActionMenu>
+                  <li><button className="dropdown-item" onClick={() => navigate(`/test-instances/${inst.id}`)}><i className="fa-solid fa-up-right-from-square fa-fw me-2"></i>View</button></li>
+                  <li><button className="dropdown-item" onClick={() => viewResults(inst)}><i className="fa-solid fa-eye fa-fw me-2"></i>Results</button></li>
+                  {inst.status === 'IN_PROGRESS' && (
+                    <li><button className="dropdown-item" onClick={() => handleClose(inst)}><i className="fa-solid fa-xmark fa-fw me-2"></i>Close</button></li>
+                  )}
+                  <li><hr className="dropdown-divider" /></li>
+                  <li><button className="dropdown-item text-danger" onClick={() => handleDelete(inst.id)}><i className="fa-solid fa-trash-can fa-fw me-2"></i>Delete</button></li>
+                </ActionMenu>
               </td>
             </tr>
           ))}

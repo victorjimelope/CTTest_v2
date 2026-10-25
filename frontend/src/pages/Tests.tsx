@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import api, { getErrorMessage } from '../api/axios'
 import Pagination from '../components/Pagination'
 import Modal from '../components/Modal'
+import ActionMenu from '../components/ActionMenu'
 import useDebounce from '../hooks/useDebounce'
 import type { Test, Center, PageResponse } from '../types'
 
@@ -149,9 +150,7 @@ export default function Tests() {
               </td>
               <td>{t.questions?.length ?? 0}</td>
               <td>
-                <div className="dropdown">
-                  <button className="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown"><i className="fa-solid fa-gear me-1"></i>Actions</button>
-                  <ul className="dropdown-menu dropdown-menu-end">
+                <ActionMenu>
                     <li><Link to={`/tests/${t.id}`} className="dropdown-item"><i className="fa-solid fa-eye fa-fw me-2"></i>View</Link></li>
                     <li><button className="dropdown-item" onClick={() => openEdit(t)}><i className="fa-solid fa-pen-ruler fa-fw me-2"></i>Edit</button></li>
                     <li><button className="dropdown-item" onClick={() => handleClone(t)}><i className="fa-regular fa-clone fa-fw me-2"></i>Clone</button></li>
@@ -166,8 +165,7 @@ export default function Tests() {
                     )}
                     <li><hr className="dropdown-divider" /></li>
                     <li><button className="dropdown-item text-danger" onClick={() => handleDelete(t.id)}><i className="fa-solid fa-trash-can fa-fw me-2"></i>Delete</button></li>
-                  </ul>
-                </div>
+                </ActionMenu>
               </td>
             </tr>
           ))}

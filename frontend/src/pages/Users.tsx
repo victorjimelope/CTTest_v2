@@ -2,6 +2,7 @@ import { useEffect, useState, FormEvent, useCallback, useRef } from 'react'
 import api, { getErrorMessage } from '../api/axios'
 import Pagination from '../components/Pagination'
 import Modal from '../components/Modal'
+import ActionMenu from '../components/ActionMenu'
 import useDebounce from '../hooks/useDebounce'
 import type { User, Center, StudentGroup, PageResponse } from '../types'
 
@@ -128,8 +129,10 @@ export default function Users() {
               <td>{u.center?.name ?? '-'}</td>
               <td>{u.studentGroupsAsString ?? '-'}</td>
               <td>
-                <button className="btn btn-sm btn-outline-primary me-1" onClick={() => openEdit(u)}>Edit</button>
-                <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(u.id)}>Delete</button>
+                <ActionMenu>
+                  <li><button className="dropdown-item" onClick={() => openEdit(u)}><i className="fa-solid fa-pen-ruler fa-fw me-2"></i>Edit</button></li>
+                  <li><button className="dropdown-item text-danger" onClick={() => handleDelete(u.id)}><i className="fa-solid fa-trash-can fa-fw me-2"></i>Delete</button></li>
+                </ActionMenu>
               </td>
             </tr>
           ))}
