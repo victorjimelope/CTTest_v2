@@ -76,8 +76,10 @@ public final class EntityDTOMapper {
                 Optional.ofNullable(entity.getStudentGroup()).map(StudentGroup::getId).orElse(null),
                 Optional.ofNullable(entity.getStudentGroup()).map(StudentGroup::getName).orElse(null),
                 entity.getPin(),
+                entity.getStatus(),
                 entity.getAssignedDate(),
-                Optional.ofNullable(entity.getAssignedBy()).map(User::getId).orElse(null)
+                Optional.ofNullable(entity.getAssignedBy()).map(User::getId).orElse(null),
+                Optional.ofNullable(entity.getAssignedBy()).map(User::getUsername).orElse(null)
         );
     }
 

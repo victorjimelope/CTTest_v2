@@ -6,6 +6,7 @@ import com.cttest.service.TestInstanceService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
@@ -20,10 +21,32 @@ public class TestInstanceServiceImpl extends BaseServiceImpl<TestInstance, Integ
     @Override
     @Transactional
     public TestInstance save(TestInstance testInstance) {
+        if (testInstance.getId() == null) {
+            testInstance.setAddDate(LocalDateTime.now());
+        } else {
+            repository.findById(testInstance.getId()).ifPresent(existing -> {
+                if (testInstance.getAddDate() == null) {
+                    testInstance.setAddDate(existing.getAddDate());
+                }
+                if (testInstance.getAddUser() == null) {
+                    testInstance.setAddUser(existing.getAddUser());
+                }
+            });
+        }
+        if (testInstance.getAddUser() == null && testInstance.getAssignedBy() != null) {
+            testInstance.setAddUser(testInstance.getAssignedBy().getId());
+        }
+        testInstance.setModDate(LocalDateTime.now());
         if (testInstance.getPin() == null) {
             testInstance.setPin(generatePin());
         }
         return repository.save(testInstance);
+    }
+
+    @Override
+    @Transactional
+    public TestInstance update(TestInstance testInstance) {
+        return save(testInstance);
     }
 
     @Override

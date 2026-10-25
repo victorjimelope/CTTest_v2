@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -43,7 +44,10 @@ public class StudentTestServiceImpl implements StudentTestService {
     @Override
     @Transactional
     public StudentTest update(StudentTest studentTest) {
-        return studentTestRepository.save(studentTest);
+        StudentTest existing = findById(studentTest.getId());
+        existing.setComment(studentTest.getComment());
+        existing.setModDate(LocalDateTime.now());
+        return studentTestRepository.save(existing);
     }
 
     @Override

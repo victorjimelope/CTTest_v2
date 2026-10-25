@@ -1,5 +1,7 @@
 package com.cttest.model.dto;
 
+import com.cttest.model.enums.TestInstanceStatus;
+
 import java.time.LocalDate;
 
 public record TestInstanceDTO(
@@ -9,6 +11,8 @@ public record TestInstanceDTO(
         Integer studentGroupId,
         String studentGroupName,
         Integer pin,
+        TestInstanceStatus status,
         LocalDate assignedDate,
-        Integer assignedByUserId) {
+        Integer assignedByUserId,
+        String assignedByUsername) {
 }
