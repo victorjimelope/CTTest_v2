@@ -11,7 +11,7 @@
         
         <property name="order" column="order_" type="integer" />
         
-        <property name="question" column="question" type="string" />
+        <property name="question" column="question" type="text" />
         
         <many-to-one name="image" class="model.Image" column="image_id"
         	unique="true" cascade="all" fetch="join" lazy="false"/>
