@@ -20,6 +20,8 @@ import java.util.Map;
 import org.springframework.security.access.prepost.PreAuthorize;
 import jakarta.validation.Valid;
 
+import com.cttest.model.entity.Answer;
+
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -36,6 +38,9 @@ public class QuestionController {
     @PostMapping("/tests/{testId}/questions")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Question> create(@PathVariable Integer testId, @Valid @RequestBody Question question) {
+        if (question.getAnswers() == null || question.getAnswers().stream().noneMatch(Answer::isCorrect)) {
+            throw new IllegalArgumentException("At least one answer must be marked as correct");
+        }
         Test test = testService.findById(testId);
         question.setTest(test);
         question.getAnswers().forEach(a -> a.setQuestion(question));
@@ -46,7 +51,12 @@ public class QuestionController {
     @PutMapping("/questions/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Question> update(@PathVariable Integer id, @Valid @RequestBody Question question) {
+        if (question.getAnswers() == null || question.getAnswers().stream().noneMatch(Answer::isCorrect)) {
+            throw new IllegalArgumentException("At least one answer must be marked as correct");
+        }
         question.setId(id);
+        Question existing = questionService.findById(id);
+        question.setTest(existing.getTest());
         question.getAnswers().forEach(a -> a.setQuestion(question));
         return ResponseEntity.ok(questionService.update(question));
     }
@@ -60,7 +70,7 @@ public class QuestionController {
 
     @PutMapping("/questions/{id}/move")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> move(@PathVariable Integer id, @RequestBody Map<String, String> body) {
+    public ResponseEntity<Void> move(@PathVariable Integer id, @Valid @RequestBody Map<String, String> body) {
         questionService.move(id, body.getOrDefault("direction", "up"));
         return ResponseEntity.noContent().build();
     }
