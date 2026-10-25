@@ -32,8 +32,8 @@ Abrir: http://localhost:8080/CTTest/ (login: admin / admin)
 ```bash
 cd /home/victor/git/CTTest_v2
 fuser -k 8081/tcp 2>/dev/null
-# Nota: JWT_SECRET es obligatorio y debe tener al menos 32 caracteres (256 bits)
-JWT_SECRET=supersecretkeyplaceholderforlocaldevelopment32chars \
+# Nota: JWT_SECRET es obligatorio y debe ser Base64 de al menos 32 bytes (256 bits)
+JWT_SECRET=YWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWE= \
 JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64 \
 mvn spring-boot:run
 ```

@@ -38,7 +38,7 @@ lsof -ti:8080 | xargs kill -9
 cd /home/victor/git/CTTest_v2
 fuser -k 8081/tcp 2>/dev/null
 
-JWT_SECRET=supersecretkeyplaceholderforlocaldevelopment32chars \
+JWT_SECRET=YWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWE= \
 DB_URL=jdbc:mysql://localhost:8033/demo \
 DB_USERNAME=root \
 DB_PASSWORD=msandbox \
@@ -92,6 +92,6 @@ docker compose up -d
 
 ## Notas
 
-- El backend nuevo requiere obligatoriamente `JWT_SECRET` con al menos 32 caracteres.
+- El backend nuevo requiere obligatoriamente `JWT_SECRET` codificado en Base64 con al menos 32 bytes.
 - La base de datos debe estar levantada antes de arrancar los servicios.
 - El proyecto legacy usa Cargo con Tomcat 9 embebido para desarrollo.
