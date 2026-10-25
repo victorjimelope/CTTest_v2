@@ -3,7 +3,9 @@ import { useParams, useNavigate } from 'react-router-dom'
 import api, { getErrorMessage } from '../api/axios'
 import ImageUpload from '../components/ImageUpload'
 import Modal from '../components/Modal'
-import type { Test, Question } from '../types'
+import Pagination from '../components/Pagination'
+import { useAuth } from '../auth/AuthContext'
+import type { Test, Question, TestInstance, StudentGroup, PageResponse } from '../types'
 
 function mimeTypeFromDataUri(uri: string): string {
   const match = uri?.match(/^data:(\w+\/\w+);/)
@@ -13,7 +15,15 @@ function mimeTypeFromDataUri(uri: string): string {
 export default function TestDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { user } = useAuth()
   const [test, setTest] = useState<Test | null>(null)
+  const [tab, setTab] = useState<'questions' | 'tests'>('questions')
+  const [instances, setInstances] = useState<TestInstance[]>([])
+  const [groups, setGroups] = useState<StudentGroup[]>([])
+  const [instPage, setInstPage] = useState(0)
+  const [assignModal, setAssignModal] = useState(false)
+  const [assignGroupId, setAssignGroupId] = useState('')
+  const [instError, setInstError] = useState<string | null>(null)
   const [qModal, setQModal] = useState(false)
   const [editingQ, setEditingQ] = useState<Question | null>(null)
   const [qText, setQText] = useState('')
@@ -39,6 +49,45 @@ export default function TestDetail() {
   }, [id])
 
   useEffect(() => load(), [load])
+
+  const loadInstances = useCallback(() => {
+    if (!id) return
+    api.get<TestInstance[]>('/test-instances', { params: { testId: Number(id) } })
+      .then((r) => setInstances(r.data))
+      .catch((err) => setInstError(getErrorMessage(err)))
+  }, [id])
+
+  useEffect(() => {
+    if (tab === 'tests') loadInstances()
+  }, [tab, loadInstances])
+
+  useEffect(() => {
+    api.get<PageResponse<StudentGroup>>('/student-groups', { params: { page: 0, size: 1000 } })
+      .then((r) => setGroups(r.data.content))
+      .catch(() => {})
+  }, [])
+
+  const openAssign = () => {
+    setAssignGroupId('')
+    setAssignModal(true)
+  }
+
+  const handleAssign = async (e: FormEvent) => {
+    e.preventDefault()
+    try {
+      await api.post('/test-instances', {
+        testId: Number(id),
+        studentGroup: { id: Number(assignGroupId) },
+        assignedBy: { id: user?.userId },
+        status: 'IN_PROGRESS',
+        assignedDate: new Date().toISOString().split('T')[0],
+      })
+      setAssignModal(false)
+      loadInstances()
+    } catch (err) {
+      setInstError(getErrorMessage(err))
+    }
+  }
 
   const openNewQuestion = () => {
     setEditingQ(null)
@@ -156,6 +205,17 @@ export default function TestDetail() {
         </div>
       </div>
 
+      <ul className="nav nav-tabs mb-3">
+        <li className="nav-item">
+          <button className={`nav-link ${tab === 'questions' ? 'active' : ''}`} onClick={() => setTab('questions')}>Questions</button>
+        </li>
+        <li className="nav-item">
+          <button className={`nav-link ${tab === 'tests' ? 'active' : ''}`} onClick={() => setTab('tests')}>Tests</button>
+        </li>
+      </ul>
+
+      {tab === 'questions' && (
+        <>
       <div className="d-flex justify-content-between mb-3">
         <h5 className="mb-0">Questions ({test.questions.length})</h5>
         <button className="btn btn-primary btn-sm" onClick={openNewQuestion}><i className="fa-solid fa-plus me-1"></i>Add Question</button>
@@ -189,6 +249,79 @@ export default function TestDetail() {
           </div>
         </div>
       ))}
+
+        </>
+      )}
+
+
+      {tab === 'tests' && (
+        <>
+          {instError && <div className="alert alert-danger alert-dismissible" role="alert">{instError}<button type="button" className="btn-close" onClick={() => setInstError(null)} /></div>}
+          <div className="d-flex justify-content-between mb-3">
+            <h5 className="mb-0">Tests ({instances.length})</h5>
+            {test.status === 'ACTIVE' && (
+              <button className="btn btn-primary btn-sm" onClick={openAssign}><i className="fa-solid fa-plus me-1"></i>Assign</button>
+            )}
+          </div>
+
+          {instances.length === 0 ? (
+            <p className="text-muted">No test instances yet</p>
+          ) : (
+            <>
+              <div className="table-responsive">
+                <table className="table table-borderless table-hover">
+                  <thead>
+                    <tr>
+                      <th scope="col" className="col-2">PIN</th>
+                      <th scope="col" className="col-2">Status</th>
+                      <th scope="col" className="col-3">Group</th>
+                      <th scope="col" className="col-3">Assigned by</th>
+                      <th scope="col" className="col-2">Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {instances.slice(instPage * 10, instPage * 10 + 10).map((inst) => (
+                      <tr key={inst.id}>
+                        <th scope="row">
+                          <button className="btn btn-link link-dark p-0" onClick={() => navigate(`/test-instances/${inst.id}`)}><code>{inst.pin}</code></button>
+                        </th>
+                        <td>
+                          <span className={`badge ${inst.status === 'CLOSED' ? 'bg-secondary' : 'bg-success'}`}>{inst.status}</span>
+                        </td>
+                        <td>{inst.studentGroupName ?? '-'}</td>
+                        <td>{inst.assignedByUsername ?? '-'}</td>
+                        <td>{inst.assignedDate}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div className="d-flex justify-content-between align-items-center">
+                <small className="text-muted">{instances.length} total</small>
+                <Pagination page={instPage} totalPages={Math.ceil(instances.length / 10)} onPageChange={setInstPage} />
+              </div>
+            </>
+          )}
+
+          <Modal show={assignModal} onClose={() => setAssignModal(false)} title="New Test Instance">
+            <form onSubmit={handleAssign}>
+              <div className="modal-body">
+                <div className="mb-3">
+                  <label className="form-label">Group</label>
+                  <select className="form-select" value={assignGroupId} onChange={(e) => setAssignGroupId(e.target.value)} required>
+                    <option value="">-- Select --</option>
+                    {groups.map((g) => <option key={g.id} value={g.id}>{g.name}</option>)}
+                  </select>
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" onClick={() => setAssignModal(false)}><i className="fa-solid fa-xmark me-1"></i>Cancel</button>
+                <button type="submit" className="btn btn-primary"><i className="fa-solid fa-check me-1"></i>Create</button>
+              </div>
+            </form>
+          </Modal>
+        </>
+      )}
 
       <Modal show={qModal} onClose={() => setQModal(false)} title={`${editingQ ? 'Edit' : 'New'} Question`} size="lg">
         <form onSubmit={handleSaveQuestion}>

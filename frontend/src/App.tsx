@@ -11,6 +11,7 @@ import Centers from './pages/Centers'
 import Tests from './pages/Tests'
 import TestDetail from './pages/TestDetail'
 import TestInstances from './pages/TestInstances'
+import TestInstanceDetail from './pages/TestInstanceDetail'
 import Students from './pages/Students'
 import StudentGroups from './pages/StudentGroups'
 import Users from './pages/Users'
@@ -45,6 +46,7 @@ export default function App() {
                 <Route path="/tests" element={<Tests />} />
                 <Route path="/tests/:id" element={<TestDetail />} />
                 <Route path="/test-instances" element={<TestInstances />} />
+                <Route path="/test-instances/:id" element={<TestInstanceDetail />} />
                 <Route path="/students" element={<Students />} />
                 <Route path="/student-groups" element={<StudentGroups />} />
                 <Route path="/users" element={<Users />} />
