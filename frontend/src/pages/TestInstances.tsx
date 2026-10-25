@@ -4,6 +4,7 @@ import api, { getErrorMessage } from '../api/axios'
 import Pagination from '../components/Pagination'
 import Modal from '../components/Modal'
 import ActionMenu from '../components/ActionMenu'
+import { formatDate } from '../utils/date'
 import type { TestInstance, Test, StudentGroup, StudentTest, PageResponse } from '../types'
 import { useAuth } from '../auth/AuthContext'
 
@@ -125,7 +126,7 @@ export default function TestInstances() {
               <td><span className={`badge ${inst.status === 'CLOSED' ? 'bg-secondary' : 'bg-success'}`}>{inst.status}</span></td>
               <td><code>{inst.pin}</code></td>
               <td>{inst.assignedByUsername ?? '-'}</td>
-              <td>{inst.assignedDate}</td>
+              <td>{formatDate(inst.assignedDate)}</td>
               <td className="text-end">
                 <ActionMenu>
                   <li><button className="dropdown-item" onClick={() => navigate(`/test-instances/${inst.id}`)}><i className="fa-solid fa-up-right-from-square fa-fw me-2"></i>View</button></li>

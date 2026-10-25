@@ -5,6 +5,7 @@ import ImageUpload from '../components/ImageUpload'
 import Modal from '../components/Modal'
 import Pagination from '../components/Pagination'
 import { useAuth } from '../auth/AuthContext'
+import { formatDate } from '../utils/date'
 import type { Test, Question, TestInstance, StudentGroup, PageResponse } from '../types'
 
 function mimeTypeFromDataUri(uri: string): string {
@@ -290,7 +291,7 @@ export default function TestDetail() {
                         </td>
                         <td>{inst.studentGroupName ?? '-'}</td>
                         <td>{inst.assignedByUsername ?? '-'}</td>
-                        <td>{inst.assignedDate}</td>
+                        <td>{formatDate(inst.assignedDate)}</td>
                       </tr>
                     ))}
                   </tbody>
