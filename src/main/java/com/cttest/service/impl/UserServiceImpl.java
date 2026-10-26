@@ -30,6 +30,19 @@ public class UserServiceImpl extends BaseServiceImpl<User, Integer, UserReposito
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Page<User> searchByCenter(String query, Integer centerId, Pageable pageable) {
+        return repository.findAll((root, cq, cb) -> {
+            Predicate centerPredicate = cb.equal(root.get("center").get("id"), centerId);
+            if (query == null || query.isBlank()) {
+                return centerPredicate;
+            }
+            Predicate usernameLike = cb.like(cb.lower(root.get("username")), "%" + query.toLowerCase() + "%");
+            return cb.and(centerPredicate, usernameLike);
+        }, pageable);
+    }
+
+    @Override
     @Transactional
     public User save(User user, boolean encodePassword) {
         if (encodePassword && user.getPassword() != null) {

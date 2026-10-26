@@ -25,8 +25,12 @@ public class UserController extends BaseController<User, UserDTO, UserService> {
 
     @GetMapping
     public ResponseEntity<?> getAll(
+            @RequestParam(required = false) Integer centerId,
             @RequestParam(required = false) String search,
             Pageable pageable) {
+        if (centerId != null) {
+            return ResponseEntity.ok(service.searchByCenter(search, centerId, pageable).map(this::toDto));
+        }
         return listAll(search, pageable);
     }
 

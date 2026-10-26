@@ -1,6 +1,7 @@
 package com.cttest.controller;
 
 import com.cttest.model.entity.Test;
+import com.cttest.model.enums.TestStatus;
 import com.cttest.model.dto.EntityDTOMapper;
 import com.cttest.model.dto.TestDTO;
 import com.cttest.service.TestService;
@@ -23,8 +24,12 @@ public class TestController extends BaseController<Test, TestDTO, TestService> {
     @GetMapping
     public ResponseEntity<?> getAll(
             @RequestParam(required = false) Integer centerId,
+            @RequestParam(required = false) TestStatus status,
             @RequestParam(required = false) String search,
             Pageable pageable) {
+        if (status != null) {
+            return ResponseEntity.ok(service.search(search, centerId, status, pageable).map(this::toDto));
+        }
         if (centerId != null) {
             return ResponseEntity.ok(service.findByCenterId(centerId).stream().map(this::toDto).toList());
         }

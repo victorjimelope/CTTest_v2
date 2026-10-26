@@ -1,6 +1,7 @@
 package com.cttest.service.impl;
 
 import com.cttest.model.entity.Test;
+import com.cttest.model.enums.TestStatus;
 import com.cttest.repository.QuestionRepository;
 import com.cttest.repository.TestRepository;
 import com.cttest.service.TestService;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,6 +31,24 @@ public class TestServiceImpl extends BaseServiceImpl<Test, Integer, TestReposito
             Predicate nameLike = cb.like(cb.lower(root.get("name")), "%" + query.toLowerCase() + "%");
             Predicate descLike = cb.like(cb.lower(root.get("description")), "%" + query.toLowerCase() + "%");
             return cb.or(nameLike, descLike);
+        }, pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Test> search(String query, Integer centerId, TestStatus status, Pageable pageable) {
+        return repository.findAll((root, cq, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            if (centerId != null) {
+                predicates.add(cb.equal(root.get("center").get("id"), centerId));
+            }
+            if (status != null) {
+                predicates.add(cb.equal(root.get("status"), status));
+            }
+            if (query != null && !query.isBlank()) {
+                predicates.add(cb.like(cb.lower(root.get("name")), "%" + query.toLowerCase() + "%"));
+            }
+            return cb.and(predicates.toArray(new Predicate[0]));
         }, pageable);
     }
 

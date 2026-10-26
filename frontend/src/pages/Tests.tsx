@@ -95,6 +95,7 @@ export default function Tests() {
 
     const params: Record<string, string | number> = { page, size: PAGE_SIZE }
     if (debouncedSearch) params.search = debouncedSearch
+    if (statusFilter) params.status = statusFilter
     params.sort = SORT_PARAMS[sort] ?? 'id,desc'
     const centerIdParam = tab === 'MY' ? user?.centerId ?? null : null
     if (centerIdParam !== null) params.centerId = centerIdParam
