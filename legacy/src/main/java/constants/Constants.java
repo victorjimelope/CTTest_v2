@@ -5,8 +5,8 @@ public final class Constants {
 	public static final String LOGGED_USER = "loggedUser";
 	public static final boolean EMPTY_OBJECT = true;
 	
-	public static final String dd_MM_yyyy = "dd-MM-yyyy";
-	public static final String dd_MM_yyyy_HH_mm = "dd-MM-yyyy HH:mm";
+	public static final String dd_MM_yyyy = "dd/MM/yyyy";
+	public static final String dd_MM_yyyy_HH_mm = "dd/MM/yyyy HH:mm";
 	
 	public static final String XLSX = ".xlsx";
 	

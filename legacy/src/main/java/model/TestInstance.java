@@ -1,7 +1,10 @@
 package model;
 
+import static constants.Constants.dd_MM_yyyy;
+
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -29,5 +32,15 @@ public class TestInstance extends BaseEntity implements Serializable {
     public boolean isClosed() {
     	return status != null && status.equals(TestInstanceStatus.CLOSED);
     }
-    
+
+	/**
+	 * Devuelve la fecha de asignación con el formato común de la aplicación.
+	 *
+	 * @return fecha de asignación formateada, o {@code null} si no está definida
+	 */
+	public String getAssignedDateAsString() {
+		return assignedDate != null ? assignedDate.format(
+				DateTimeFormatter.ofPattern(dd_MM_yyyy)) : null;
+	}
+
 }

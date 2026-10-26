@@ -6,5 +6,6 @@ public record LoginResponse(
         Integer userId,
         String username,
         boolean admin,
+        Integer centerId,
         String refreshToken) {
 }

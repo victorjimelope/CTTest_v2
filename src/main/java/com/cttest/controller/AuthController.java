@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -49,7 +50,8 @@ public class AuthController {
 
         return ResponseEntity.ok(new LoginResponse(
                 token, "Bearer", userDetails.getId(),
-                userDetails.getUsername(), userDetails.isAdmin(), refreshToken));
+                userDetails.getUsername(), userDetails.isAdmin(),
+                userDetails.getCenterId(), refreshToken));
     }
 
     @PostMapping("/refresh")
@@ -73,7 +75,9 @@ public class AuthController {
 
         return ResponseEntity.ok(new LoginResponse(
                 token, "Bearer", user.getId(),
-                user.getUsername(), user.isAdmin(), refreshToken));
+                user.getUsername(), user.isAdmin(),
+                user.getCenter() != null ? user.getCenter().getId() : null,
+                refreshToken));
     }
 
     @PostMapping("/logout")
@@ -92,12 +96,15 @@ public class AuthController {
             return ResponseEntity.ok(Map.of("authenticated", false));
         }
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        return ResponseEntity.ok(Map.of(
-                "authenticated", true,
-                "userId", userDetails.getId(),
-                "username", userDetails.getUsername(),
-                "admin", userDetails.isAdmin()
-        ));
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("authenticated", true);
+        response.put("userId", userDetails.getId());
+        response.put("username", userDetails.getUsername());
+        response.put("admin", userDetails.isAdmin());
+        response.put("centerId", userDetails.getCenterId());
+
+        return ResponseEntity.ok(response);
     }
 
 }
