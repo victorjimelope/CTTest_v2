@@ -1,3 +1,5 @@
+import { t } from '../i18n'
+
 interface PaginationProps {
   page: number
   totalPages: number
@@ -7,32 +9,37 @@ interface PaginationProps {
 export default function Pagination({ page, totalPages, onPageChange }: PaginationProps) {
   if (totalPages <= 1) return null
 
-  const pages: number[] = []
-  const start = Math.max(0, page - 2)
-  const end = Math.min(totalPages - 1, page + 2)
-  for (let i = start; i <= end; i++) pages.push(i)
+  const isFirst = page <= 0
+  const isLast = page >= totalPages - 1
 
   return (
-    <nav>
-      <ul className="pagination pagination-sm mb-0">
-        <li className={`page-item ${page === 0 ? 'disabled' : ''}`}>
-          <button className="page-link" onClick={() => onPageChange(0)}><i className="fa-solid fa-angles-left"></i></button>
-        </li>
-        <li className={`page-item ${page === 0 ? 'disabled' : ''}`}>
-          <button className="page-link" onClick={() => onPageChange(page - 1)}><i className="fa-solid fa-chevron-left"></i></button>
-        </li>
-        {pages.map((p) => (
-          <li key={p} className={`page-item ${p === page ? 'active' : ''}`}>
-            <button className="page-link" onClick={() => onPageChange(p)}>{p + 1}</button>
-          </li>
-        ))}
-        <li className={`page-item ${page === totalPages - 1 ? 'disabled' : ''}`}>
-          <button className="page-link" onClick={() => onPageChange(page + 1)}><i className="fa-solid fa-chevron-right"></i></button>
-        </li>
-        <li className={`page-item ${page === totalPages - 1 ? 'disabled' : ''}`}>
-          <button className="page-link" onClick={() => onPageChange(totalPages - 1)}><i className="fa-solid fa-angles-right"></i></button>
-        </li>
-      </ul>
-    </nav>
+    <div className="row align-items-center mt-3">
+      <div className="col">
+        <span className="text-muted">{t('label_page_xxx_of_yyy', [page + 1, totalPages])}</span>
+      </div>
+
+      <div className="col-auto ms-auto">
+        <div className="d-flex gap-2">
+          <button
+            type="button"
+            className="btn btn-light"
+            disabled={isFirst}
+            onClick={() => onPageChange(page - 1)}
+            aria-label={t('label_previous')}
+          >
+            <i className="fa-solid fa-chevron-left px-2" />
+          </button>
+          <button
+            type="button"
+            className="btn btn-light"
+            disabled={isLast}
+            onClick={() => onPageChange(page + 1)}
+            aria-label={t('label_next')}
+          >
+            <i className="fa-solid fa-chevron-right px-2" />
+          </button>
+        </div>
+      </div>
+    </div>
   )
 }

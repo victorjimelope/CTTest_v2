@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './auth/AuthContext'
+import { ToastProvider } from './components/Toast'
 import ErrorBoundary from './components/ErrorBoundary'
 import PrivateRoute from './components/PrivateRoute'
 import Layout from './components/Layout'
@@ -26,35 +27,37 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <ErrorBoundary>
-          <Suspense fallback={<Spinner />}>
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/take-test" element={<PinEntry />} />
-              <Route path="/take-test/:id" element={<TestTaking />} />
-              <Route path="/take-test/:id/result" element={<TestResult />} />
-              <Route
-                element={
-                  <PrivateRoute>
-                    <Layout />
-                  </PrivateRoute>
-                }
-              >
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/centers" element={<Centers />} />
-                <Route path="/tests" element={<Tests />} />
-                <Route path="/tests/:id" element={<TestDetail />} />
-                <Route path="/test-instances" element={<TestInstances />} />
-                <Route path="/test-instances/:id" element={<TestInstanceDetail />} />
-                <Route path="/students" element={<Students />} />
-                <Route path="/student-groups" element={<StudentGroups />} />
-                <Route path="/users" element={<Users />} />
-              </Route>
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Suspense>
-        </ErrorBoundary>
+        <ToastProvider>
+          <ErrorBoundary>
+            <Suspense fallback={<Spinner />}>
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/take-test" element={<PinEntry />} />
+                <Route path="/take-test/:id" element={<TestTaking />} />
+                <Route path="/take-test/:id/result" element={<TestResult />} />
+                <Route
+                  element={
+                    <PrivateRoute>
+                      <Layout />
+                    </PrivateRoute>
+                  }
+                >
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/centers" element={<Centers />} />
+                  <Route path="/tests" element={<Tests />} />
+                  <Route path="/tests/:id" element={<TestDetail />} />
+                  <Route path="/test-instances" element={<TestInstances />} />
+                  <Route path="/test-instances/:id" element={<TestInstanceDetail />} />
+                  <Route path="/students" element={<Students />} />
+                  <Route path="/student-groups" element={<StudentGroups />} />
+                  <Route path="/users" element={<Users />} />
+                </Route>
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
+          </ErrorBoundary>
+        </ToastProvider>
       </AuthProvider>
     </BrowserRouter>
   )

@@ -1,12 +1,15 @@
 import { useState, FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from '../api/axios'
+import { t } from '../i18n'
+import usePageTitle from '../hooks/usePageTitle'
 
 export default function HomePage() {
   const [pin, setPin] = useState('')
   const [studentId, setStudentId] = useState('')
   const [error, setError] = useState('')
   const navigate = useNavigate()
+  usePageTitle()
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -18,7 +21,7 @@ export default function HomePage() {
       })
       navigate(`/take-test/${res.data.studentTestId}`)
     } catch {
-      setError('Invalid PIN or student not assigned')
+      setError(t('label_invalid_pin'))
     }
   }
 
@@ -34,7 +37,7 @@ export default function HomePage() {
             </div>
 
             <div className="mb-3">
-              <label className="form-label fw-bold">Test PIN</label>
+              <label className="form-label fw-bold">{t('label_test_pin')}</label>
               <input
                 type="number"
                 className="form-control mt-2"
@@ -46,7 +49,7 @@ export default function HomePage() {
             </div>
 
             <div className="mb-5">
-              <label className="form-label fw-bold">Student ID</label>
+              <label className="form-label fw-bold">{t('label_student_id')}</label>
               <input
                 type="number"
                 className="form-control mt-2"
@@ -57,13 +60,13 @@ export default function HomePage() {
             </div>
 
             <button type="submit" className="btn btn-warning fw-bold py-2 w-100 fs-5">
-              Enter
+              {t('label_enter')}
             </button>
 
             <div className="d-flex justify-content-center mt-4">
               <a href="/login" className="fw-bold text-white text-decoration-none d-flex align-items-center gap-2">
                 <i className="fa-solid fa-lock"></i>
-                Login
+                {t('label_login')}
               </a>
             </div>
           </form>

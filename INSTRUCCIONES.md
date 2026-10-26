@@ -116,3 +116,7 @@ JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64 \
 ```bash
 docker compose up -d
 ```
+
+> **Estado UI (2026-10-26):** el legacy está congelado salvo bugfix crítico y el ajuste de
+> fechas a `dd/MM/yyyy`. La paridad visual se desarrolla en `feature/ui-parity`; ver
+> `ESTUDIO_UI.md`.
