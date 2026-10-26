@@ -1,0 +1,84 @@
+-- ============================================================
+-- Database Migrations — CTTest v2
+-- Target: MySQL 8.x / utf8mb4_0900_ai_ci / InnoDB
+-- ============================================================
+-- Aplicar contra BD de producción con:
+--   mysql -h localhost -P 8033 -u root -p demo < migrations.txt
+-- ============================================================
+
+-- ============================================================
+-- LOTE 1 — Inmediatos (sin cambios Java)
+-- ============================================================
+
+-- 1. Optimistic locking (@Version)
+ALTER TABLE `student_test`
+  ADD COLUMN `version` bigint NOT NULL DEFAULT 0
+  AFTER `score`;
+
+-- 2. Índice compuesto para consultas por estudiante + estado
+CREATE INDEX `idx_stt_student_status`
+  ON `student_test` (`student_id`, `status_id`);
+
+-- 3. Precisión de score (actual decimal(4,2) → decimal(5,2))
+ALTER TABLE `student_test`
+  MODIFY `score` decimal(5,2) DEFAULT NULL;
+
+-- ============================================================
+-- LOTE 2 — Integridad y auditoría
+-- ============================================================
+
+-- 4. CHECK constraints para columnas enum
+ALTER TABLE `test`
+  ADD CONSTRAINT `ck_test_type`   CHECK (`type_id`   IN (1, 2)),
+  ADD CONSTRAINT `ck_test_status` CHECK (`status_id` IN (1, 2, 3));
+
+ALTER TABLE `test_instance`
+  ADD CONSTRAINT `ck_ti_status` CHECK (`status_id` IN (1, 2));
+
+ALTER TABLE `student_test`
+  ADD CONSTRAINT `ck_stt_status` CHECK (`status_id` IN (1, 2, 3, 4));
+
+ALTER TABLE `student`
+  ADD CONSTRAINT `ck_gender` CHECK (`gender_type` IN (0, 1, 2, 9));
+
+ALTER TABLE `image`
+  ADD CONSTRAINT `ck_mime` CHECK (`mime_type` IN (1, 2, 3));
+
+ALTER TABLE `question`
+  ADD CONSTRAINT `ck_layout` CHECK (`layout_type_id` IN (1, 2, 3));
+
+-- 5. Eliminar índice redundante en student_answer
+DROP INDEX `idx_stn_ans_idx` ON `student_answer`;
+
+-- 6. Ampliar question.question
+ALTER TABLE `question` MODIFY `question` text DEFAULT NULL;
+
+-- ============================================================
+-- LOTE 3 — Consistencia en eliminación (solo DDL)
+-- ============================================================
+
+-- 7. ON DELETE CASCADE (coherencia cuando se elimina fuera del ORM)
+ALTER TABLE `question` DROP FOREIGN KEY `fk_tst_idx2`;
+ALTER TABLE `question` ADD CONSTRAINT `fk_tst_idx2`
+  FOREIGN KEY (`test_id`) REFERENCES `test` (`id`) ON DELETE CASCADE;
+
+ALTER TABLE `answer` DROP FOREIGN KEY `fk_qtn_idx`;
+ALTER TABLE `answer` ADD CONSTRAINT `fk_qtn_idx`
+  FOREIGN KEY (`question_id`) REFERENCES `question` (`id`) ON DELETE CASCADE;
+
+-- Nota: countTotal ya no se materializa en BD porque se reemplazó @Formula
+-- por consultas batch en StudentAnswerRepository + TestServiceImpl
+
+-- ============================================================
+-- LOTE 4 — Refactor mayor (requiere cambios en entidades JPA)
+-- ============================================================
+
+-- 9. PK compuesta en rel_user_student_group
+-- Si la columna id YA fue eliminada (ejecutado previamente):
+ALTER TABLE `rel_user_student_group` DROP INDEX `uq_usr_stn_grp_idx`,
+  ADD PRIMARY KEY (`user_id`, `student_group_id`);
+-- Índice redundante (PK ya cubre user_id como prefijo izquierdo):
+ALTER TABLE `rel_user_student_group` DROP INDEX `fk_usr_idx`;
+
+-- 10. Compresión de tabla image
+ALTER TABLE `image` ROW_FORMAT=COMPRESSED;
