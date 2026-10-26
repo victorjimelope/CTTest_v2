@@ -27,6 +27,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             userId: r.data.userId,
             username: r.data.username,
             admin: r.data.admin,
+            centerId: r.data.centerId ?? null,
             refreshToken: '',
           })
         }

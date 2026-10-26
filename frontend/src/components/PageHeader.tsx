@@ -11,7 +11,6 @@ interface PageHeaderProps {
   title: string
   breadcrumbs?: BreadcrumbItem[]
   action?: ReactNode
-  showActionOnMobile?: boolean
 }
 
 export default function PageHeader({ title, breadcrumbs = [], action }: PageHeaderProps) {

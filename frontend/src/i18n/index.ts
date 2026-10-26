@@ -1,4 +1,9 @@
-const messages = {
+import listsMessages from './pages-lists'
+import testsMessages from './pages-tests'
+import detailsMessages from './pages-details'
+import studentMessages from './pages-student'
+
+const baseMessages = {
   label_app_name: 'CTTest',
 
   label_dashboard: 'Panel',
@@ -182,15 +187,25 @@ const messages = {
   label_test_cloned: 'Test clonado correctamente',
   label_error_generating_pin: 'Error al generar PIN',
   label_error_loading: 'Error al cargar los datos',
+  label_error_unexpected: 'Se ha producido un error inesperado',
   label_error_saving: 'Error al guardar',
   label_error_deleting: 'Error al eliminar',
   label_page_not_found: 'Página no encontrada',
   label_page_not_found_description: 'La página que buscas no existe o ha sido movida.',
   label_go_to_dashboard: 'Ir al panel',
+  label_go_home: 'Volver al inicio',
   label_view_results: 'Ver resultados',
   label_no_student_tests: 'Todavía no hay exámenes de alumnos',
   label_new_password_help: 'Nueva contraseña (dejar en blanco para mantener)',
   label_delete_center_short: 'Eliminar centro',
+} as const
+
+const messages = {
+  ...baseMessages,
+  ...listsMessages,
+  ...testsMessages,
+  ...detailsMessages,
+  ...studentMessages,
 } as const
 
 export type MessageKey = keyof typeof messages

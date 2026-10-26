@@ -99,6 +99,7 @@ export interface LoginResponse {
   userId: number
   username: string
   admin: boolean
+  centerId: number | null
   refreshToken: string
 }
 

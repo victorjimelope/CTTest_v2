@@ -1,0 +1,27 @@
+const detailsMessages = {
+  details_assign: 'Asignar',
+  details_tab_tests: 'Pruebas',
+  details_edit_question: 'Editar pregunta',
+  details_correct: 'Correcta',
+  details_answer_number: 'Respuesta {0}',
+  details_all_answers_need_image: 'Todas las respuestas deben tener una imagen',
+  details_delete_question_confirmation: '¿Estás seguro que deseas eliminar la pregunta?',
+  details_question_duplicated: 'Pregunta duplicada correctamente',
+  details_no_questions: 'Este test no tiene preguntas todavía',
+  details_layout_columns: 'Columnas',
+  details_layout_rows: 'Filas',
+  details_layout_grid: 'Cuadrícula',
+  details_no_image: 'Sin imagen',
+  details_test_not_found: 'Test no encontrado',
+  details_test_done: 'Test realizado',
+  details_student: 'Alumno',
+  details_all_statuses: 'Todos los estados',
+  details_sort_name: 'Ordenar por nombre',
+  details_sort_score: 'Ordenar por puntuación',
+  details_sort_start_date: 'Ordenar por fecha de inicio',
+  details_sort_finish_date: 'Ordenar por fecha de fin',
+  details_results_exported: 'Resultados exportados correctamente',
+  details_instance_not_found: 'Instancia no encontrada',
+} as const
+
+export default detailsMessages

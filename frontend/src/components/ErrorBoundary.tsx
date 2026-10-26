@@ -1,4 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react'
+import { t } from '../i18n'
 
 interface Props {
   children: ReactNode
@@ -27,7 +28,7 @@ export default class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         <div className="container mt-5 text-center">
-          <h2 className="text-danger">Something went wrong</h2>
+          <h2 className="text-danger">{t('label_error_unexpected')}</h2>
           <p className="text-muted">{this.state.error?.message}</p>
           <button
             className="btn btn-primary"
@@ -36,7 +37,7 @@ export default class ErrorBoundary extends Component<Props, State> {
               window.location.href = '/'
             }}
           >
-            Go to Home
+            {t('label_go_home')}
           </button>
         </div>
       )
