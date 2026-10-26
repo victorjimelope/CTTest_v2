@@ -17,3 +17,4 @@ docker-data/
 
 frontend/dist/
 *.tsbuildinfo
+frontend/.vite/
